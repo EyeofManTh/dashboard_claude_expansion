@@ -1,0 +1,2097 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>SUNGWOO | 성우비나 대시보드</title><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet"/><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script><style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --nav-w:240px;
+  --bg:#EEF2F7;--bg2:#FFFFFF;
+  --glass:rgba(255,255,255,0.88);--glass2:rgba(255,255,255,0.98);
+  --b:rgba(15,23,42,0.09);--b2:rgba(15,23,42,0.18);
+  --t1:#0F172A;--t2:#1E293B;--t3:#64748B;
+  --sky:#0369A1;--sky2:#0EA5E9;
+  --gold:#92400E;--gold2:#D97706;
+  --em:#065F46;--em2:#059669;
+  --pu:#4C1D95;--pu2:#7C3AED;
+  --red:#881337;--red2:#E11D48;
+}
+html{scroll-behavior:auto}
+body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR','Outfit',sans-serif;overflow-x:hidden;min-height:100vh}
+
+/* ── progress (섹션 인디케이터) ── */
+#progress{position:fixed;top:0;left:var(--nav-w);right:0;height:2px;background:linear-gradient(90deg,#0EA5E9,#059669,#D97706);width:100%;z-index:9999;transition:opacity .3s}
+
+/* ── ambient / grid ── */
+.ambient{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.ambient::before{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 70% 50% at 30% 10%,rgba(14,165,233,.07) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 60% at 90% 85%,rgba(5,150,105,.05) 0%,transparent 60%),
+  radial-gradient(ellipse 40% 40% at 65% 45%,rgba(124,58,237,.03) 0%,transparent 60%)}
+.grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(15,23,42,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(15,23,42,.04) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 100% 100% at 50% 0%,black 0%,transparent 75%)}
+
+/* ══════════════════════════════════════════
+   SIDEBAR NAV
+══════════════════════════════════════════ */
+#nav{
+  position:fixed;top:0;left:0;bottom:0;
+  width:var(--nav-w);z-index:1000;
+  background:rgba(15,23,42,.97);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-right:1px solid rgba(255,255,255,.07);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+
+/* 로고 */
+.nav-logo{
+  display:flex;align-items:center;gap:.85rem;
+  text-decoration:none;
+  padding:1.7rem 1.3rem 1.5rem;
+  border-bottom:1px solid var(--b);
+  transition:background .2s;
+  flex-shrink:0;
+}
+.nav-logo:hover{background:rgba(255,255,255,.04)}
+.logo-mark{
+  width:44px;height:44px;flex-shrink:0;
+  background:linear-gradient(135deg,#0369A1,#059669);
+  border-radius:13px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:900;color:#fff;
+  box-shadow:0 0 20px rgba(14,165,233,.3),inset 0 1px 0 rgba(255,255,255,.2)
+}
+.logo-text h1{font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:900;color:var(--t1);letter-spacing:.3px;line-height:1.2}
+.logo-text p{font-size:.65rem;font-weight:700;color:var(--sky2);letter-spacing:1px;text-transform:uppercase;margin-top:.25rem}
+
+/* 섹션 구분 라벨 */
+.nav-section-label{
+  font-family:'Outfit',sans-serif;
+  font-size:.55rem;font-weight:800;letter-spacing:1.8px;
+  text-transform:uppercase;color:var(--t3);
+  padding:.6rem 1.3rem .3rem;
+  flex-shrink:0;
+}
+
+/* 메뉴 항목 */
+.nav-pills{
+  display:flex;flex-direction:column;gap:.2rem;
+  padding:.6rem .75rem;
+  background:none;border:none;border-radius:0;
+  flex:1;overflow-y:auto;
+}
+.nav-pills::-webkit-scrollbar{display:none}
+
+.np{
+  font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:600;
+  color:var(--t2);
+  padding:.72rem 1rem;
+  border-radius:10px;
+  cursor:pointer;text-decoration:none;
+  transition:all .18s;
+  display:flex;align-items:center;gap:.65rem;
+  white-space:nowrap;
+  border:1px solid transparent;
+  position:relative;
+}
+.np::before{
+  content:'';
+  width:5px;height:5px;border-radius:50%;
+  background:var(--t3);flex-shrink:0;
+  transition:all .18s;
+}
+.np:hover{
+  color:var(--t1);
+  background:rgba(255,255,255,.06);
+}
+.np:hover::before{background:var(--t2);}
+.np.on{
+  color:var(--gold2);
+  background:linear-gradient(90deg,rgba(245,158,11,.12),rgba(245,158,11,.04));
+  border-color:rgba(245,158,11,.18);
+  box-shadow:inset 3px 0 0 var(--gold);
+  font-weight:700;
+}
+.np.on::before{background:var(--gold2);}
+.np-icon{display:none} /* 데스크탑에서는 숨김 */
+
+/* 하단 푸터 */
+.nav-footer{
+  padding:1.1rem 1.3rem;
+  border-top:1px solid rgba(255,255,255,.08);
+  flex-shrink:0;
+}
+.nav-footer-link{
+  display:flex;align-items:center;gap:.4rem;
+  font-size:.68rem;font-weight:600;color:#60A5FA;
+  text-decoration:none;margin-bottom:.5rem;
+  transition:opacity .2s;
+}
+.nav-footer-link:hover{opacity:.7}
+.nav-footer-meta{font-size:.6rem;color:#475569;line-height:1.6}
+
+/* ── NAV 전용 색상 오버라이드 (dark sidebar on light page) ── */
+#nav .logo-text h1{color:#F8FAFC}
+#nav .logo-text p{color:#38BDF8}
+#nav .nav-section-label{color:#475569}
+#nav .np{color:#94A3B8}
+#nav .np::before{background:#475569}
+#nav .np:hover{color:#F8FAFC;background:rgba(255,255,255,.05)}
+#nav .np:hover::before{background:#94A3B8}
+#nav .np.on{color:#FCD34D;background:linear-gradient(90deg,rgba(251,191,36,.14),rgba(251,191,36,.05));border-color:rgba(251,191,36,.22);box-shadow:inset 3px 0 0 #F59E0B}
+#nav .np.on::before{background:#FCD34D}
+#nav{border-right:1px solid rgba(255,255,255,.07)}
+#nav .nav-logo{border-bottom:1px solid rgba(255,255,255,.07)}
+
+/* ══════════════════════════════════════════
+   PAGE / VIEW SWITCHING
+══════════════════════════════════════════ */
+.page{position:relative;z-index:1;margin-left:var(--nav-w);padding:0 2.5rem}
+
+/* 각 섹션을 독립 뷰로 — 기본 숨김 */
+.view{
+  display:none;
+  opacity:0;
+  transform:translateY(16px);
+  transition:opacity .35s ease, transform .35s ease;
+  min-height:calc(100vh - 4rem);
+}
+.view.active{
+  display:block;
+  opacity:1;
+  transform:translateY(0);
+}
+/* 전환 애니메이션용 */
+.view.entering{
+  display:block;
+  opacity:0;
+  transform:translateY(16px);
+}
+
+/* sec-div 뷰 전환 시 숨김 */
+.sec-div{display:none}
+
+/* ── HERO ── */
+.hero{padding:3rem 0 4rem;text-align:center}
+.hero-headline{font-family:'Outfit',sans-serif;font-size:3.2rem;font-weight:900;line-height:1.08;letter-spacing:-1px;margin-bottom:1.2rem;background:linear-gradient(160deg,#0F172A 20%,rgba(3,105,161,.75) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:1.05rem;color:#334155;max-width:580px;margin:0 auto 1.8rem;line-height:1.75}
+
+/* ── NOTICE BANNER ── */
+.notice-banner{
+  width:100%;margin:0 0 2.2rem;
+  display:flex;align-items:center;gap:1.2rem;
+  padding:1.0rem 2rem 1.0rem 1.8rem;
+  background:linear-gradient(90deg,rgba(14,165,233,.06) 0%,rgba(5,150,105,.04) 50%,rgba(124,58,237,.02) 100%);
+  border:1px solid rgba(14,165,233,.20);
+  border-radius:14px;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  text-align:left;position:relative;overflow:hidden;
+  box-shadow:0 4px 20px rgba(14,165,233,.05),inset 0 1px 0 rgba(255,255,255,.6);
+  transition:box-shadow .3s,border-color .3s;
+}
+.notice-banner:hover{
+  border-color:rgba(14,165,233,.35);
+  box-shadow:0 6px 28px rgba(14,165,233,.09),inset 0 1px 0 rgba(255,255,255,.7);
+}
+.notice-banner::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:4px;border-radius:14px 0 0 14px;
+  background:linear-gradient(180deg,#0EA5E9 0%,#059669 55%,#7C3AED 100%);
+}
+.notice-banner::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 35% 100% at 0% 50%,rgba(14,165,233,.04),transparent 65%);
+  pointer-events:none;
+}
+.nb-icon{
+  font-size:1.35rem;flex-shrink:0;
+  filter:drop-shadow(0 0 8px rgba(14,165,233,.45));
+}
+.nb-body{display:flex;align-items:center;gap:1.1rem;flex:1;min-width:0}
+.nb-label{
+  font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:800;
+  letter-spacing:2px;text-transform:uppercase;white-space:nowrap;flex-shrink:0;
+  background:linear-gradient(90deg,var(--sky2),var(--em2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+
+}
+.nb-divider{width:1px;height:1.3rem;background:rgba(15,23,42,.18);flex-shrink:0}
+.nb-text{
+  font-size:.92rem;color:rgba(30,41,59,.85);
+  line-height:1.6;letter-spacing:-.1px;
+  font-family:'Noto Sans KR',sans-serif;
+  flex:1;min-width:0;
+}
+.nb-author{
+  display:flex;align-items:center;gap:.45rem;
+  flex-shrink:0;margin-left:.6rem;
+  padding:.3rem .75rem .3rem .6rem;
+  background:rgba(15,23,42,.05);
+  border:1px solid rgba(15,23,42,.14);
+  border-radius:99px;
+  transition:background .2s,border-color .2s;
+}
+.nb-author:hover{background:rgba(15,23,42,.09);border-color:rgba(15,23,42,.25)}
+.nb-avatar{
+  width:18px;height:18px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,#d97820,#28a860);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Outfit',sans-serif;font-size:.52rem;font-weight:900;color:#fff;
+}
+.nb-author-name{
+  font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;
+  color:var(--gold2);letter-spacing:.5px;white-space:nowrap;
+}
+
+/* ── TRAJECTORY ── */
+.traj{display:flex;align-items:flex-start;justify-content:center;gap:0;margin-bottom:4rem}
+.traj-node{text-align:center;padding:1.8rem 2rem;background:var(--glass);border:1px solid var(--b);border-radius:24px;min-width:210px;transition:all .3s}
+.traj-node:hover{background:var(--glass2);border-color:var(--b2);transform:translateY(-3px)}
+.traj-node.focal{border-color:rgba(40,168,96,.3);background:rgba(40,168,96,.05);box-shadow:0 0 40px rgba(40,168,96,.08)}
+.traj-year{font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:.5rem}
+.traj-num{font-family:'Outfit',sans-serif;font-size:2.4rem;font-weight:900;line-height:1;margin-bottom:.25rem}
+.c-sky{color:var(--sky2)}.c-em{color:var(--em2)}.c-gold{background:linear-gradient(135deg,var(--gold2),#FB923C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.traj-grow{font-size:.7rem;font-weight:700;padding:.2rem .55rem;border-radius:6px;margin:.45rem 0 .5rem;display:inline-block}
+.grow-up{color:var(--em2);background:rgba(40,168,96,.1)}
+.traj-arrow{padding:0 .5rem;display:flex;align-items:center;color:var(--t3);font-size:1.2rem;padding-top:4.5rem}
+.traj-bd{margin-top:1rem;padding-top:1rem;border-top:1px dashed rgba(15,23,42,.12);display:flex;flex-direction:column;gap:.6rem;text-align:left}
+.tbd-item{display:flex;align-items:center;justify-content:space-between;gap:.8rem;font-size:.85rem;color:var(--t2);font-weight:500}
+.tbd-item span:first-child{display:flex;align-items:center;gap:.2rem;color:var(--t2)}
+.tbd-val{font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:800;white-space:nowrap}
+
+/* ── SECTION ── */
+.section{padding:5rem 0}
+.sec-label{display:inline-flex;align-items:center;font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#fff;padding:.32rem .9rem;border-radius:20px;margin-bottom:1rem}
+.sl-blue{background:linear-gradient(135deg,#0EA5E9,#1D4ED8)}
+.sl-green{background:linear-gradient(135deg,#10B981,#059669)}
+.sl-gray{background:linear-gradient(135deg,#64748B,#475569)}
+.sl-tri{background:linear-gradient(135deg,#F59E0B,#EF4444)}
+.sl-mix{background:linear-gradient(135deg,#0EA5E9,#8B5CF6,#F59E0B)}
+.sec-title{font-family:'Outfit',sans-serif;font-size:2rem;font-weight:800;color:var(--t1);margin-bottom:.3rem}
+.sec-sub{font-size:.78rem;color:var(--t3)}
+
+/* ── KPI ── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;margin:2rem 0 1.4rem}
+.kpi{position:relative;background:var(--glass);border:1px solid var(--b);border-radius:22px;padding:1.5rem 1.6rem;overflow:hidden;transition:all .3s;box-shadow:0 2px 12px rgba(15,23,42,.06)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:1.5px}
+.kpi-sky::before{background:linear-gradient(90deg,transparent,#0EA5E9,#38BDF8,transparent)}
+.kpi-gold::before{background:linear-gradient(90deg,transparent,#D97706,#FBBF24,transparent)}
+.kpi-em::before{background:linear-gradient(90deg,transparent,#10B981,#34D399,transparent)}
+.kpi-pu::before{background:linear-gradient(90deg,transparent,#8B5CF6,#A78BFA,transparent)}
+.kpi-red::before{background:linear-gradient(90deg,transparent,#F43F5E,#FB7185,transparent)}
+.kpi:hover{background:var(--glass2);border-color:var(--b2);transform:translateY(-4px);box-shadow:0 24px 48px rgba(15,23,42,.12)}
+.kpi-tag{font-size:.62rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:.55rem}
+.kpi-main{font-family:'Outfit',sans-serif;font-size:2.3rem;font-weight:900;line-height:1;margin-bottom:.5rem}
+.kpi-sky .kpi-main{color:var(--sky2)}.kpi-gold .kpi-main{color:var(--gold2)}.kpi-em .kpi-main{color:var(--em2)}.kpi-pu .kpi-main{color:var(--pu2)}.kpi-red .kpi-main{color:var(--red2)}
+.kpi-unit{font-size:.9rem;font-weight:600;opacity:.6;margin-left:.1rem}
+.kpi-badge{display:inline-flex;align-items:center;gap:.2rem;font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:7px}
+.kb-up{color:var(--em2);background:rgba(16,185,129,.1)}.kb-neutral{color:var(--gold2);background:rgba(245,158,11,.1)}.kb-down{color:var(--red2);background:rgba(244,63,94,.1)}
+
+/* ── PROC MINI CARDS ── */
+.proc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;margin-bottom:1.8rem}
+.proc-card{background:var(--glass);border:1px solid var(--b);border-radius:16px;padding:1.1rem 1.4rem;position:relative;overflow:hidden;transition:all .3s;box-shadow:0 2px 10px rgba(15,23,42,.05)}
+.proc-card:hover{background:var(--glass2);border-color:var(--b2);transform:translateY(-2px)}
+.proc-card-top{position:absolute;top:0;left:0;right:0;height:1.5px}
+.proc-card-label{display:flex;align-items:center;gap:.5rem;margin-bottom:.55rem}
+.proc-card-val{font-family:'Outfit',sans-serif;font-size:1.9rem;font-weight:900;line-height:1;margin-bottom:.5rem}
+.proc-card-footer{display:flex;align-items:center;justify-content:space-between}
+
+/* ── CARDS & GRIDS ── */
+.card{background:var(--glass);border:1px solid var(--b);border-radius:22px;padding:1.7rem 1.8rem;transition:border-color .25s,box-shadow .25s;box-shadow:0 2px 14px rgba(15,23,42,.06)}
+.card:hover{border-color:var(--b2);box-shadow:0 12px 40px rgba(15,23,42,.10)}
+.card-ttl{font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;color:var(--t1);margin-bottom:.2rem}
+.card-sub{font-size:.72rem;color:var(--t3);margin-bottom:1.4rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.3rem}
+.g3-1{display:grid;grid-template-columns:1.85fr 1fr;gap:1.2rem;margin-bottom:1.3rem}
+.g3w{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:1.2rem;margin-bottom:1.3rem}
+.mb{margin-bottom:1.3rem}
+.cb{position:relative;height:270px}.cb-lg{position:relative;height:340px}.cb-xl{position:relative;height:370px}.cb-combo{position:relative;height:420px}
+
+/* ── DIVIDER ── */
+.sec-div{height:1px;background:linear-gradient(90deg,transparent,var(--b),transparent)}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;border-radius:12px}
+.tbl{width:100%;border-collapse:collapse;font-size:.78rem;min-width:960px}
+.tbl th{font-size:.58rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;padding:.7rem .75rem;text-align:right;border-bottom:1px solid var(--b);white-space:nowrap}
+.tbl th:first-child{text-align:left;min-width:145px}
+.tbl td{padding:.62rem .75rem;text-align:right;border-bottom:1px solid rgba(15,23,42,.06);color:var(--t2);font-family:'Outfit',sans-serif}
+.tbl td:first-child{text-align:left;color:var(--t1);font-weight:600;font-family:'Noto Sans KR',sans-serif;font-size:.77rem}
+.tbl tr:hover td{background:rgba(15,23,42,.03)}
+.tbl tfoot td{padding:.8rem .75rem;text-align:right;border-top:1px solid var(--b);color:var(--t1);font-weight:700;font-family:'Outfit',sans-serif}
+.tbl tfoot td:first-child{text-align:left;font-family:'Noto Sans KR',sans-serif}
+.tbl-grp td{background:rgba(15,23,42,.04)!important;font-size:.58rem!important;font-weight:800!important;letter-spacing:1.5px!important;text-transform:uppercase!important;color:var(--t3)!important;padding:.45rem .75rem!important;font-family:'Outfit',sans-serif!important}
+.tag{display:inline-flex;align-items:center;font-size:.55rem;font-weight:800;letter-spacing:.4px;padding:.1rem .4rem;border-radius:4px;margin-left:.3rem}
+.tp{background:rgba(14,165,233,.18);color:#0a60a0}.ta{background:rgba(200,120,0,.16);color:#7a4000}.tv{background:rgba(16,185,129,.18);color:#0a5a38}.tl{background:rgba(139,92,246,.16);color:#4a20a0}.ts{background:rgba(14,165,233,.18);color:#0a60a0}.tf{background:rgba(139,92,246,.16);color:#4a20a0}.te{background:rgba(100,116,139,.18);color:#3a4c5c}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}.reveal.visible{opacity:1;transform:none}
+
+/* ── INSIGHT CARDS ── */
+.ins-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;margin-bottom:.8rem}
+.ins-card{background:var(--glass);border:1px solid var(--b);border-radius:18px;padding:1.3rem 1.5rem;transition:all .3s;box-shadow:0 2px 10px rgba(15,23,42,.05)}
+.ins-card:hover{background:var(--glass2);border-color:var(--b2);transform:translateY(-3px)}
+.ins-q{font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.7rem;display:inline-block;padding:.18rem .6rem;border-radius:6px}
+.ins-ttl{font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:700;color:var(--t1);margin-bottom:.5rem}
+.ins-stat{display:flex;flex-direction:column;gap:.35rem;margin-bottom:.7rem}
+.ins-row{display:flex;align-items:center;justify-content:space-between;font-size:.72rem}
+.ins-lbl{color:var(--t3)}.ins-val{font-family:'Outfit',sans-serif;font-weight:700;color:var(--t2)}
+.ins-desc{font-size:.7rem;color:var(--t3);line-height:1.6;border-top:1px dashed rgba(15,23,42,.12);padding-top:.6rem}
+
+/* ── TRAJ FOCAL GOLD ── */
+.traj-node.focal-gold{border-color:rgba(245,158,11,.45);background:linear-gradient(160deg,rgba(245,158,11,.09),rgba(245,158,11,.03));box-shadow:0 0 60px rgba(245,158,11,.22),0 0 0 1px rgba(245,158,11,.14),0 24px 48px rgba(15,23,42,.10);transform:scale(1.045);position:relative;z-index:2}
+.traj-node.focal-gold:hover{background:linear-gradient(160deg,rgba(245,158,11,.13),rgba(245,158,11,.05))!important;border-color:rgba(245,158,11,.6)!important;transform:scale(1.045) translateY(-3px)!important}
+.traj-node.focal-gold .traj-year{color:var(--gold2);font-weight:800;letter-spacing:2.5px}
+.traj-node.focal-gold .traj-num{font-size:2.85rem}
+
+/* ── SECTION TITLE ROW + DROPDOWN FILTERS ── */
+.sec-title-row{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:.8rem 1.2rem;margin-bottom:.3rem}
+.dash-filters{display:flex;gap:.55rem;align-items:center;padding-bottom:.18rem;flex-shrink:0}
+.dash-select-wrap{position:relative}
+.dash-select-wrap::after{content:'';position:absolute;right:.62rem;top:50%;transform:translateY(-50%) rotate(0deg);width:0;height:0;border-left:3.5px solid transparent;border-right:3.5px solid transparent;border-top:5px solid var(--t3);pointer-events:none;transition:border-color .15s}
+.dash-select-wrap:focus-within::after{border-top-color:var(--gold2)}
+.dash-select{font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:600;color:var(--t1);background:rgba(255,255,255,.95);border:1px solid rgba(15,23,42,.18);border-radius:10px;padding:.42rem 2rem .42rem .85rem;cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;transition:all .2s;min-width:108px;backdrop-filter:blur(8px)}
+.dash-select:hover{border-color:rgba(15,23,42,.32);background:rgba(255,255,255,.99)}
+.dash-select:focus{border-color:rgba(14,165,233,.55);box-shadow:0 0 0 3px rgba(14,165,233,.08)}
+.dash-select option{background:#FFFFFF;color:var(--t1)}
+.dash-select-mo{min-width:82px!important}
+.dash-range-sep{font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:700;color:var(--t3);padding:0 .1rem;flex-shrink:0;align-self:center}
+.dash-range-label{font-family:'Outfit',sans-serif;font-size:.6rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--t3);align-self:center;margin-right:.05rem;flex-shrink:0}
+
+/* ── KPI v2 (통합 뉴트럴) ── */
+.kpi-row2{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;margin:1.4rem 0 1rem}
+.kpi2{background:rgba(255,255,255,.88);border:1px solid rgba(15,23,42,.09);border-radius:18px;padding:1.45rem 1.6rem 1.3rem;transition:all .25s;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(15,23,42,.05)}
+.kpi2:hover{background:rgba(255,255,255,.99);border-color:rgba(15,23,42,.18);transform:translateY(-3px);box-shadow:0 8px 24px rgba(15,23,42,.08)}
+.kpi2::after{content:'';position:absolute;bottom:0;left:12%;right:12%;height:1px}
+.kpi2-1::after{background:linear-gradient(90deg,transparent,rgba(52,211,153,.55),transparent)}
+.kpi2-2::after{background:linear-gradient(90deg,transparent,rgba(56,189,248,.55),transparent)}
+.kpi2-3::after{background:linear-gradient(90deg,transparent,rgba(252,211,77,.55),transparent)}
+.kpi2-4::after{background:linear-gradient(90deg,transparent,rgba(251,113,133,.55),transparent)}
+.kpi2-tag{font-size:.6rem;font-weight:700;color:var(--t3);letter-spacing:.9px;text-transform:uppercase;margin-bottom:.55rem}
+.kpi2-num{font-family:'Outfit',sans-serif;font-size:2.5rem;font-weight:900;line-height:1;color:var(--t1);margin-bottom:.5rem}
+.kpi2-unit{font-size:.9rem;font-weight:600;opacity:.4;margin-left:.1rem}
+.kpi2-badge{display:inline-flex;align-items:center;font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:600;padding:.18rem .6rem;border-radius:6px}
+.kpi2-neutral{background:rgba(15,23,42,.05);color:var(--t2);border:1px solid rgba(15,23,42,.10)}
+.kpi2-down{background:rgba(225,29,72,.07);color:rgba(180,20,50,.9);border:1px solid rgba(225,29,72,.16)}
+.kpi2-warn{background:rgba(180,100,0,.08);color:rgba(130,70,0,.9);border:1px solid rgba(180,100,0,.16)}
+
+/* ── Proc card v2 (스파크라인 포함) ── */
+.proc-grid2{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;margin-bottom:1.8rem}
+.pcard{background:rgba(255,255,255,.88);border:1px solid rgba(15,23,42,.09);border-radius:18px;padding:1.2rem 1.4rem 1rem;transition:all .25s;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(15,23,42,.05)}
+.pcard:hover{background:rgba(255,255,255,.99);border-color:rgba(15,23,42,.18);transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,.08)}
+.pcard-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem}
+.pcard-name{font-family:'Outfit',sans-serif;font-size:.6rem;font-weight:800;color:var(--t3);letter-spacing:1.2px;text-transform:uppercase}
+.pcard-num{font-family:'Outfit',sans-serif;font-size:2.15rem;font-weight:900;line-height:1;color:var(--t1);margin-bottom:.1rem}
+.pcard-unit{font-size:.82rem;font-weight:600;opacity:.38;margin-left:.08rem}
+.pcard-spark{height:52px;margin:.5rem 0 .5rem}
+.pcard-ft{display:flex;align-items:center;justify-content:space-between;font-size:.68rem;color:var(--t3);font-weight:500;border-top:1px solid rgba(15,23,42,.08);padding-top:.5rem}
+.pcard-pct{font-family:'Outfit',sans-serif;font-weight:700;color:var(--t2);font-size:.82rem}
+.tag-sm{display:inline-flex;align-items:center;font-size:.52rem;font-weight:800;letter-spacing:.3px;padding:.1rem .4rem;border-radius:4px}
+.tag-press{background:rgba(14,165,233,.18);color:#0a60a0}
+.tag-outpack{background:rgba(200,120,0,.16);color:#7a4000}
+.tag-inpack{background:rgba(16,185,129,.18);color:#0a5a38}
+.tag-laser{background:rgba(139,92,246,.16);color:#4a20a0}
+
+/* ── FOOTER ── */
+footer{text-align:center;padding:3rem 0 2.5rem;color:var(--t3);font-size:.72rem;border-top:1px solid var(--b);margin-top:2rem}
+
+/* ── 제작 배경 카드 ── */
+.origin-card{
+  background:linear-gradient(135deg,rgba(5,150,105,.04) 0%,rgba(14,165,233,.03) 50%,rgba(124,58,237,.02) 100%);
+  border:1px solid rgba(5,150,105,.18);
+  border-radius:22px;padding:1.8rem 2.2rem;
+  position:relative;overflow:hidden;
+  box-shadow:0 8px 32px rgba(5,150,105,.05),inset 0 1px 0 rgba(255,255,255,.6);
+}
+.origin-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,#059669,#0EA5E9,#7C3AED);
+}
+.origin-hd{display:flex;align-items:center;gap:.8rem;margin-bottom:1.4rem}
+.origin-icon{
+  width:40px;height:40px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(5,150,105,.16),rgba(14,165,233,.12));
+  border:1px solid rgba(5,150,105,.22);
+  display:flex;align-items:center;justify-content:center;font-size:1.15rem;
+}
+.origin-title{font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:800;color:var(--t1);margin-bottom:.18rem}
+.origin-sub{font-size:.72rem;color:var(--em2);font-weight:600;letter-spacing:.5px}
+.origin-body{display:grid;grid-template-columns:1fr auto 1fr;gap:1.5rem;align-items:center}
+.ob-box{
+  border-radius:14px;padding:1.2rem 1.5rem;position:relative;
+}
+.ob-before{
+  background:rgba(244,63,94,.05);border:1px solid rgba(244,63,94,.18);
+}
+.ob-after{
+  background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.2);
+}
+.ob-tag{
+  font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;
+  letter-spacing:1.8px;text-transform:uppercase;margin-bottom:.7rem;display:block;
+}
+.ob-tag-before{color:var(--red2)}
+.ob-tag-after{color:var(--em2)}
+.ob-flow{
+  font-size:.8rem;color:var(--t2);line-height:1.7;font-family:'Noto Sans KR',sans-serif;
+  margin-bottom:.8rem;
+}
+.ob-time{
+  display:inline-flex;align-items:center;gap:.4rem;
+  font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:800;
+  color:var(--red2);
+  background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.18);
+  border-radius:8px;padding:.28rem .75rem;
+}
+.ob-points{display:flex;flex-direction:column;gap:.55rem}
+.ob-point{
+  display:flex;align-items:flex-start;gap:.5rem;
+  font-size:.82rem;color:var(--t1);line-height:1.5;font-family:'Noto Sans KR',sans-serif;
+}
+.ob-point-icon{color:var(--em2);font-weight:800;flex-shrink:0;margin-top:.05rem}
+.ob-arrow{
+  display:flex;flex-direction:column;align-items:center;gap:.3rem;
+  color:var(--t3);font-size:1.5rem;font-weight:300;
+}
+.ob-arrow-label{font-family:'Outfit',sans-serif;font-size:.52rem;font-weight:700;color:var(--em2);letter-spacing:1px;text-transform:uppercase}
+.ob-step{display:flex;align-items:flex-start;gap:.7rem}
+.ob-step-num{
+  font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:900;
+  min-width:26px;height:26px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — TABLET (≤1024px)
+══════════════════════════════════════════ */
+@media(max-width:1024px){
+  :root{--nav-w:200px}
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .kpi-row2{grid-template-columns:repeat(2,1fr)}
+  .proc-grid{grid-template-columns:repeat(2,1fr)}
+  .proc-grid2{grid-template-columns:repeat(2,1fr)}
+  .ins-grid{grid-template-columns:repeat(2,1fr)}
+  .g3w{grid-template-columns:1fr 1fr}
+  .hero-headline{font-size:2.6rem}
+  .traj{gap:0;flex-wrap:wrap;justify-content:center}
+  .traj-node{min-width:180px}
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — MOBILE (≤768px)
+══════════════════════════════════════════ */
+@media(max-width:768px){
+  :root{--nav-w:0px;--bot-nav:56px}
+
+  /* 사이드바 → 하단 탭바 */
+  #nav{
+    position:fixed;top:auto;bottom:0;left:0;right:0;
+    width:100%;height:var(--bot-nav);
+    border-right:none;border-top:1px solid var(--b);
+    flex-direction:row;overflow:visible;
+  }
+  .nav-logo,.nav-section-label,.nav-footer{display:none}
+  .nav-pills{
+    flex-direction:row;width:100%;padding:0;gap:0;
+    overflow:hidden;background:none;border:none;border-radius:0;
+    flex:unset;
+  }
+  .np{
+    flex:1;flex-direction:column;justify-content:center;align-items:center;
+    padding:.25rem .2rem .35rem;gap:.18rem;
+    font-size:.5rem;font-weight:700;
+    border-radius:0;border:none;white-space:nowrap;
+  }
+  .np::before{display:none}
+  .np-icon{font-size:1.05rem;line-height:1;display:block}
+  .np.on{
+    color:var(--gold2);
+    background:rgba(245,158,11,.06);
+    box-shadow:none;
+  }
+  .np.on::after{
+    content:'';position:absolute;top:0;left:15%;right:15%;height:2px;
+    background:var(--gold);border-radius:0 0 3px 3px;
+  }
+
+  /* 상단 모바일 헤더 */
+  #mob-header{display:flex!important}
+
+  /* 아이콘 표시 */
+  .np-icon{display:block;font-size:1rem;line-height:1}
+
+  /* 콘텐츠 영역 */
+  #progress{left:0}
+  .page{
+    margin-left:0;
+    padding:0 .9rem;
+    padding-top:calc(48px + .4rem);
+    padding-bottom:calc(var(--bot-nav) + .5rem);
+  }
+
+  /* Hero */
+  .hero{padding:1.8rem 0 1.2rem;text-align:center}
+  .hero-headline{font-size:1.8rem;letter-spacing:-.3px}
+  .hero-sub{font-size:.75rem;margin-bottom:1.2rem}
+
+  /* Trajectory — 세로 스택 */
+  .traj{flex-direction:column;align-items:stretch;margin-bottom:1.2rem;gap:0}
+  .traj-node{min-width:unset;padding:1rem 1.2rem;border-radius:16px}
+  .traj-arrow{transform:rotate(90deg);padding:.15rem 0;justify-content:center;padding-top:0}
+  .traj-bd{grid-template-columns:1fr 1fr;display:grid;gap:.35rem .5rem}
+  .tbd-val{font-size:1rem}
+
+  /* Section */
+  .section{padding:1.5rem 0}
+  .sec-title{font-size:1.3rem}
+  .sec-sub{font-size:.68rem}
+
+  /* Grids → 1열 or 2열 */
+  .kpi-row{grid-template-columns:1fr 1fr;gap:.65rem;margin:1rem 0}
+  .kpi-row2{grid-template-columns:1fr 1fr;gap:.65rem;margin:1rem 0}
+  .proc-grid{grid-template-columns:1fr 1fr;gap:.65rem}
+  .proc-grid2{grid-template-columns:1fr 1fr;gap:.65rem}
+  .ins-grid{grid-template-columns:1fr 1fr;gap:.65rem}
+  .g2{grid-template-columns:1fr;gap:.8rem;margin-bottom:.9rem}
+  .g3-1{grid-template-columns:1fr;gap:.8rem;margin-bottom:.9rem}
+  .g3w{grid-template-columns:1fr;gap:.8rem;margin-bottom:.9rem}
+  .mb{margin-bottom:.8rem}
+
+  /* KPI 폰트 축소 */
+  .kpi-main{font-size:1.7rem}
+  .kpi2-num{font-size:1.7rem}
+  .kpi-tag,.kpi2-tag{font-size:.58rem}
+  .pcard-num{font-size:1.6rem}
+
+  /* Card */
+  .card{padding:1rem 1.1rem}
+  .card-ttl{font-size:.88rem}
+  .card-sub{font-size:.64rem}
+
+  /* 차트 높이 */
+  .cb{height:200px}.cb-lg{height:230px}.cb-xl{height:255px}.cb-combo{height:275px}
+
+  /* 카드 헤더 (타이틀+필터) 세로 정렬 */
+  .card-hdr-row{flex-direction:column!important;align-items:flex-start!important;gap:.55rem!important}
+  .dash-filters{flex-wrap:wrap;width:100%}
+  .dash-select{font-size:.72rem;padding:.32rem 1.5rem .32rem .65rem;min-width:82px}
+  .dash-select-mo{min-width:62px!important}
+
+  /* ── 인라인 스타일 무력화 — 모바일 1열 정렬 ── */
+  /* 목적 화면: Before/After 카드 세로 스택 */
+  .origin-card{padding:1.2rem 1.1rem}
+  .origin-body{grid-template-columns:1fr!important;gap:.9rem!important;align-items:stretch!important}
+  .origin-body>div:nth-child(2){display:none!important} /* 중앙 화살표 숨김 */
+  .ob-box{padding:1rem 1.1rem!important}
+
+  /* 안내 배너 세로 스택 */
+  .notice-banner{flex-direction:column;align-items:flex-start;gap:.55rem;padding:.9rem 1rem}
+  .nb-body{flex-direction:column;align-items:flex-start;gap:.4rem}
+  .nb-divider{display:none}
+  .nb-text{font-size:.78rem;line-height:1.55}
+  .nb-text br{display:none}
+
+  /* 전망 화면: Forecast 인사이트 카드 1열 */
+  .ins-grid{grid-template-columns:1fr!important;gap:.7rem}
+
+  /* footer */
+  footer{padding:1.5rem 0 1rem;font-size:.62rem}
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — SMALL MOBILE (≤480px)
+══════════════════════════════════════════ */
+@media(max-width:480px){
+  .hero-headline{font-size:1.55rem}
+  .kpi-row,.kpi-row2{grid-template-columns:1fr 1fr}
+  .proc-grid2,.ins-grid{grid-template-columns:1fr 1fr}
+  .kpi-main,.kpi2-num{font-size:1.5rem}
+  .cb-combo{height:250px}
+  .traj-node{padding:.85rem 1rem}
+  .traj-num{font-size:1.8rem}
+}
+
+/* ══════════════════════════════════════════
+   PDF 저장 버튼
+══════════════════════════════════════════ */
+#pdfBtn{
+  position:fixed;right:1.6rem;bottom:1.6rem;z-index:1100;
+  font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:700;color:#fff;
+  background:linear-gradient(135deg,#0EA5E9,#059669);
+  border:none;border-radius:12px;padding:.7rem 1.1rem;cursor:pointer;
+  box-shadow:0 6px 20px rgba(15,23,42,.18);
+  display:flex;align-items:center;gap:.45rem;
+  transition:transform .15s,box-shadow .15s;
+}
+#pdfBtn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(15,23,42,.28)}
+#pdfBtn:active{transform:translateY(0)}
+#pdfBtn:disabled{opacity:.6;cursor:wait}
+@media(max-width:768px){#pdfBtn{right:1rem;bottom:calc(var(--bot-nav,56px) + .8rem);font-size:.74rem;padding:.6rem .9rem}}
+
+/* ══════════════════════════════════════════
+   인쇄 / PDF 출력 — 전체 뷰 펼침
+══════════════════════════════════════════ */
+body.printing #nav,body.printing .ambient,body.printing .grid-bg,
+body.printing #progress,body.printing #mob-header,body.printing #pdfBtn{display:none!important}
+body.printing .page{margin-left:0!important;padding:0 1.5rem!important}
+body.printing .view{display:block!important;opacity:1!important;transform:none!important;min-height:auto!important}
+body.printing .reveal{opacity:1!important;transform:none!important}
+body.printing .kpi-row,body.printing .kpi-row2{grid-template-columns:repeat(4,1fr)!important}
+body.printing .ins-grid{grid-template-columns:repeat(3,1fr)!important}
+body.printing .g2,body.printing .g3-1,body.printing .g3w{grid-template-columns:1fr 1fr!important}
+body.printing .g3w>*:first-child{grid-column:1 / -1}
+body.printing #view-s2025,body.printing #view-s2024{display:none!important}
+body.printing .cb{height:130px!important}
+body.printing .cb-lg{height:145px!important}
+body.printing .cb-xl{height:160px!important}
+body.printing .cb-combo{height:195px!important}
+
+@media print{
+  @page{size:A4 landscape;margin:10mm}
+  #nav,.ambient,.grid-bg,#progress,#mob-header,#pdfBtn{display:none!important}
+  body{background:#fff!important}
+  /* 실제 프린터 하드웨어 부담 경감: 블러·그림자 제거 */
+  *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important}
+  /* 캔버스가 페이지 폭을 절대 넘지 않도록 안전장치 (잘림 방지) */
+  canvas{max-width:100%!important}
+  .page{margin-left:0!important;padding:0 .6rem!important}
+  .view{display:block!important;opacity:1!important;transform:none!important;min-height:auto!important}
+  .reveal{opacity:1!important;transform:none!important}
+  /* 각 주요 화면을 새 페이지에서 시작 */
+  #s2026,#s2025,#s2024,#sYoY{page-break-before:always}
+  /* 메뉴바 순서대로 출력: 전망 → 전년대비 */
+  .page{display:flex!important;flex-direction:column!important}
+  #view-s2026{order:1}#view-sYoY{order:2}
+  #view-s2025,#view-s2024,#view-main{display:none!important}  /* 목적·2025·2024 실적은 PDF 제외 */
+  footer{display:none!important}
+  /* 목적 화면 1페이지에 맞춤 (Before/After 좌우 배치) */
+  .origin-body{grid-template-columns:1fr auto 1fr!important}
+  .origin-body>div:nth-child(2){display:flex!important}
+  .origin-card{padding:14px 18px!important}
+  .ob-box{padding:12px 14px!important}
+  /* 그리드 유지 (모바일 1열 붕괴 방지) — 도넛 나란히 배치 */
+  .kpi-row,.kpi-row2{grid-template-columns:repeat(4,1fr)!important;gap:8px!important}
+  .ins-grid{grid-template-columns:repeat(3,1fr)!important;gap:8px!important}
+  .g2,.g3-1,.g3w{grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .g3w>*:first-child{grid-column:1 / -1}
+  .cb{height:130px!important}.cb-lg{height:145px!important}.cb-xl{height:160px!important}.cb-combo{height:195px!important}
+  .card{padding:8px 10px!important}
+  .card-ttl{font-size:.8rem!important;margin-bottom:.1rem!important}
+  .card-sub{font-size:.62rem!important;margin-bottom:.5rem!important}
+  .mb,.g2,.g3-1,.g3w{margin-bottom:8px!important}
+  .section{padding:0!important}
+  .sec-title{font-size:1.3rem!important;margin-bottom:.1rem!important}
+  .sec-sub{font-size:.68rem!important}
+  .kpi-row2,.kpi-row{margin:.6rem 0 .7rem!important}
+  .ins-card{padding:.7rem .85rem!important}
+  .ins-desc{font-size:.62rem!important;line-height:1.4!important}
+  /* 통합 데이터 표: 12개월+합계 열이 페이지 폭 안에 정확히 맞도록 압축 */
+  .tbl-wrap{overflow:visible!important}
+  .tbl{width:100%!important;min-width:0!important;table-layout:fixed!important;font-size:.56rem!important}
+  .tbl th,.tbl td{padding:.2rem .25rem!important;white-space:nowrap!important}
+  .tbl th:first-child,.tbl td:first-child{min-width:0!important;width:100px!important;font-size:.56rem!important}
+  .tag{font-size:.4rem!important;padding:.04rem .2rem!important;margin-left:.15rem!important}
+  /* 카드·차트가 페이지 경계에서 잘리지 않도록 */
+  .card,.kpi,.kpi2,.ins-card,.proc-card,.traj-node,.origin-card,.notice-banner{
+    break-inside:avoid;page-break-inside:avoid
+  }
+  /* 배경색·그라데이션 강제 출력 */
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+}
+</style></head>
+<body>
+<div id="progress"></div>
+<div class="ambient"></div>
+<div class="grid-bg"></div>
+
+<!-- PDF 저장 버튼 -->
+<button id="pdfBtn" onclick="exportPDF()" title="전체 화면을 PDF로 저장">
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 1v8m0 0L5 6m3 3l3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  PDF 저장
+</button>
+
+<!-- 모바일 전용 상단 헤더 -->
+<div id="mob-header" style="display:none;position:fixed;top:0;left:0;right:0;z-index:900;background:rgba(8,18,36,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--b);padding:.55rem 1rem;align-items:center;justify-content:space-between">
+  <div style="display:flex;align-items:center;gap:.55rem">
+    <div style="width:28px;height:28px;background:linear-gradient(135deg,#1D4ED8,#10B981);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:900;color:#fff;flex-shrink:0">SW</div>
+    <div>
+      <div style="font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:800;color:var(--t1);line-height:1.2">성우비나 대시보드</div>
+      <div style="font-size:.52rem;color:var(--sky2);letter-spacing:.8px;font-weight:700">2024–2026 PRODUCTION</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SIDEBAR NAV
+══════════════════════════════════════════ -->
+<nav id="nav">
+  <!-- 로고 -->
+  <a href="http://www.swei.co.kr" target="_blank" class="nav-logo">
+    <div class="logo-mark">SW</div>
+    <div class="logo-text">
+      <h1>SU<span style="color:var(--em2)">N</span>GWOO</h1>
+      <p>Global Manufacturing</p>
+    </div>
+  </a>
+
+  <!-- 메뉴 항목 -->
+  <div class="nav-pills">
+    <div class="nav-section-label">2026 분석</div>
+    <a href="#s2026" class="np on" id="nav-2026" data-view="s2026"><span class="np-icon">📊</span>전망 &amp; Capa 검토</a>
+    <a href="#sYoY"  class="np" id="nav-yoy"  data-view="sYoY"><span class="np-icon">🔄</span>전년 대비 비교</a>
+
+    <div class="nav-section-label" style="margin-top:.6rem">연도별 실적</div>
+    <a href="#s2025" class="np" id="nav-2025" data-view="s2025"><span class="np-icon">📈</span>2025 실적</a>
+    <a href="#s2024" class="np" id="nav-2024" data-view="s2024"><span class="np-icon">📉</span>2024 실적</a>
+
+    <div class="nav-section-label" style="margin-top:.6rem">Overview</div>
+    <a href="#main"  class="np" id="nav-main"  data-view="main"><span class="np-icon">🎯</span>목적</a>
+  </div>
+
+  <!-- 하단 정보 -->
+  <div class="nav-footer">
+    <a href="http://www.swei.co.kr" target="_blank" class="nav-footer-link">
+      www.swei.co.kr
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="opacity:.6"><path d="M2 8L8 2M8 2H4M8 2V6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <div class="nav-footer-meta">성우비나 생산 실적 보고서<br/>2024 – 2026</div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     CONTENT
+══════════════════════════════════════════ -->
+<div class="page">
+
+<!-- ── VIEW: 목적 ── -->
+<div class="view" id="view-main">
+<section id="main" class="section" style="padding:2.5rem 0">
+
+  <!-- 목적 헤더 -->
+  <div style="margin-bottom:2rem">
+    <h3 class="sec-title">대시보드 제작 목적</h3>
+    <p class="sec-sub">성우비나 생산 실적 분석 방식의 디지털 전환 — AI 기술을 통한 업무 혁신</p>
+  </div>
+
+  <!-- 전환 스토리 카드 -->
+  <div class="origin-card reveal">
+    <div class="origin-body" style="grid-template-columns:1fr 80px 1fr;align-items:stretch">
+
+      <!-- BEFORE -->
+      <div class="ob-box ob-before" style="display:flex;flex-direction:column;gap:1rem">
+        <div>
+          <span class="ob-tag ob-tag-before" style="font-size:.65rem;letter-spacing:2px">BEFORE · 기존 방식</span>
+          <div style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800;color:var(--t1);margin-top:.5rem;margin-bottom:.9rem">수작업 중심의 엑셀 분석</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.6rem;flex:1">
+          <div class="ob-step">
+            <span class="ob-step-num" style="background:rgba(244,63,94,.15);color:var(--red2)">01</span>
+            <div><strong style="color:var(--t1)">ERP 실적 다운로드</strong><br/><span style="font-size:.75rem;color:var(--t2)">시스템에서 원시 데이터 직접 추출</span></div>
+          </div>
+          <div class="ob-step">
+            <span class="ob-step-num" style="background:rgba(244,63,94,.15);color:var(--red2)">02</span>
+            <div><strong style="color:var(--t1)">공정별 · 품목별 수동 분류</strong><br/><span style="font-size:.75rem;color:var(--t2)">필요한 공정과 코드를 사람이 직접 구분</span></div>
+          </div>
+          <div class="ob-step">
+            <span class="ob-step-num" style="background:rgba(244,63,94,.15);color:var(--red2)">03</span>
+            <div><strong style="color:var(--t1)">피벗 테이블 작성</strong><br/><span style="font-size:.75rem;color:var(--t2)">엑셀에서 반복적인 피벗 분석 수행</span></div>
+          </div>
+          <div class="ob-step">
+            <span class="ob-step-num" style="background:rgba(244,63,94,.15);color:var(--red2)">04</span>
+            <div><strong style="color:var(--t1)">단순 숫자 나열 보고서</strong><br/><span style="font-size:.75rem;color:var(--t2)">시인성 낮은 정적 엑셀 자료 제출</span></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-self:flex-start">
+          <div class="ob-time">⏱ 매월 상당 시간 소요</div>
+          <div class="ob-time">⚠ Human Error 우려</div>
+        </div>
+      </div>
+
+      <!-- 화살표 -->
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem">
+        <div style="width:1px;flex:1;background:linear-gradient(180deg,transparent,rgba(16,185,129,.4),transparent)"></div>
+        <div style="font-size:1.6rem;color:var(--em2)">⇒</div>
+        <div style="font-family:'Outfit',sans-serif;font-size:.58rem;font-weight:800;color:var(--em2);letter-spacing:1.5px;writing-mode:vertical-rl;text-transform:uppercase">AI 전환</div>
+        <div style="width:1px;flex:1;background:linear-gradient(180deg,transparent,rgba(16,185,129,.4),transparent)"></div>
+      </div>
+
+      <!-- AFTER -->
+      <div class="ob-box ob-after" style="display:flex;flex-direction:column;gap:1rem">
+        <div>
+          <span class="ob-tag ob-tag-after" style="font-size:.65rem;letter-spacing:2px">AFTER · 현재 방식</span>
+          <div style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800;color:var(--t1);margin-top:.5rem;margin-bottom:.9rem">AI 기반 인터랙티브 대시보드</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.6rem;flex:1">
+          <div class="ob-step">
+            <span class="ob-step-num" style="background:rgba(16,185,129,.15);color:var(--em2)">01</span>
+            <div><strong style="color:var(--t1)">ERP 실적 다운로드</strong><br/><span style="font-size:.75rem;color:var(--t2)">동일하게 시스템에서 원시 데이터 추출</span></div>
+          </div>
+          <div class="ob-step">
+            <span class="ob-step-num" style="background:rgba(16,185,129,.15);color:var(--em2)">02</span>
+            <div><strong style="color:var(--t1)">Gemini AI 자동 분류</strong><br/><span style="font-size:.75rem;color:var(--t2)">공정별 · 품목별 분류를 AI가 자동 처리</span></div>
+          </div>
+          <div class="ob-step">
+            <span class="ob-step-num" style="background:rgba(16,185,129,.15);color:var(--em2)">03</span>
+            <div><strong style="color:var(--t1)">Claude Code 시각화</strong><br/><span style="font-size:.75rem;color:var(--t2)">인터랙티브 대시보드 자동 생성</span></div>
+          </div>
+          <div class="ob-step">
+            <span class="ob-step-num" style="background:rgba(16,185,129,.15);color:var(--em2)">04</span>
+            <div><strong style="color:var(--t1)">직관적 경영 보고서</strong><br/><span style="font-size:.75rem;color:var(--t2)">Capa · 가동율 실시간 분석 및 Forecast 통합</span></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+          <span style="font-size:.72rem;font-weight:700;color:var(--em2);background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);border-radius:8px;padding:.22rem .7rem">⚡ 업무 시간 대폭 단축</span>
+          <span style="font-size:.72rem;font-weight:700;color:var(--sky2);background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.25);border-radius:8px;padding:.22rem .7rem">📊 시인성 · 직관성 향상</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 대시보드 안내 박스 — 하단 -->
+  <div class="notice-banner" style="margin-top:1.8rem;margin-bottom:0">
+    <span class="nb-icon">📋</span>
+    <div class="nb-body">
+      <span class="nb-label">Dashboard Overview</span>
+      <span class="nb-divider"></span>
+      <p class="nb-text">ERP 실적을 Gemini AI로 자동 분류·Claude Code로 시각화 — 공정별·시리즈별 생산 실적 및 Capa 가동율 현황을 한눈에 파악하고,<br/>경영계획 Forecast와 통합 분석하여 문제를 사전에 감지하는 인터랙티브 대시보드입니다</p>
+    </div>
+  </div>
+
+
+</section>
+</div><!-- /view-main -->
+
+<!-- ── VIEW: 2026 ── -->
+<div class="view active" id="view-s2026">
+<section id="s2026" class="section">
+  <span class="sec-label sl-mix">2026 전망 &amp; Capa 검토</span>
+  <div style="display:flex;align-items:center;flex-wrap:wrap;gap:.9rem;margin-bottom:.3rem">
+    <h3 class="sec-title" style="margin-bottom:0">2026년 경영계획 Forecast &amp; 생산 Capa 통합 분석</h3>
+    <div class="dash-select-wrap" style="flex-shrink:0">
+      <select id="sectionProcFilter" class="dash-select" style="min-width:148px;font-size:.88rem;padding:.48rem 2.2rem .48rem 1rem">
+        <option value="all" selected>All 공정</option>
+        <option value="press">Press</option>
+        <option value="vp">일관 포장</option>
+        <option value="assy">외주 포장</option>
+        <option value="laser">Laser</option>
+
+      </select>
+    </div>
+  </div>
+  <p class="sec-sub">공정별 · 시리즈별 전망 &nbsp;·&nbsp; <span style="color:var(--em2);font-weight:600">1~6월 ERP 확정 실적</span> &nbsp;·&nbsp; <span style="color:var(--gold2);font-weight:600">7~12월 경영계획 Forecast</span> &nbsp;·&nbsp; 연간 전망 1,277.8M &nbsp;·&nbsp; Max Capa 1,811.0M</p>
+
+  <!-- KPI 요약 행 -->
+  <div class="kpi-row2 reveal">
+    <div class="kpi2 kpi2-1">
+      <div class="kpi2-tag" id="kpi-prod-tag">전망 생산량 합계</div>
+      <div class="kpi2-num"><span id="kpi-prod-val">1,277.8</span><span class="kpi2-unit">M</span></div>
+      <span class="kpi2-badge kpi2-down" id="kpi-prod-badge">▼ -7.8% YoY</span>
+    </div>
+    <div class="kpi2 kpi2-2">
+      <div class="kpi2-tag" id="kpi-capa-tag">최대 생산 CAPA</div>
+      <div class="kpi2-num"><span id="kpi-capa-val">1,811.0</span><span class="kpi2-unit">M</span></div>
+      <span class="kpi2-badge kpi2-neutral" id="kpi-capa-badge">잔여 Capa: 533.2M EA</span>
+    </div>
+    <div class="kpi2 kpi2-3">
+      <div class="kpi2-tag">평균 가동률</div>
+      <div class="kpi2-num"><span id="kpi-util-val">70.6</span><span class="kpi2-unit">%</span></div>
+      <span class="kpi2-badge kpi2-neutral" id="kpi-util-badge">여유 가동 비율: 29.4%</span>
+    </div>
+    <div class="kpi2 kpi2-4">
+      <div class="kpi2-tag" id="kpi-peak-tag">PEAK 월 가동률 (6월)</div>
+      <div class="kpi2-num"><span id="kpi-peak-val">90.5</span><span class="kpi2-unit">%</span></div>
+      <span class="kpi2-badge kpi2-warn" id="kpi-peak-badge">⚠ Peak 가동월: 6월 (90.5%)</span>
+    </div>
+  </div>
+
+  <!-- Q1~Q4 분기별 인사이트 카드 -->
+  <div class="ins-grid reveal" style="grid-template-columns:repeat(3,1fr)">
+
+    <!-- 1~6월 ERP 확정 실적 -->
+    <div class="ins-card" style="border-color:rgba(14,165,233,.25);background:rgba(14,165,233,.04)">
+      <span class="ins-q" style="color:#38BDF8;background:rgba(14,165,233,.14)">◆ ERP 확정 · 1~6월 실적</span>
+      <div class="ins-ttl">상반기 확정 실적 요약</div>
+      <div class="ins-stat">
+        <div class="ins-row"><span class="ins-lbl">누적 확정 실적</span><span class="ins-val" style="color:var(--em2)">663.2M</span></div>
+        <div class="ins-row"><span class="ins-lbl">평균 가동률</span><span class="ins-val" style="color:var(--sky2)">76.3%</span></div>
+        <div class="ins-row"><span class="ins-lbl">6월 가동률</span><span class="ins-val" style="color:var(--gold2)">90.5% ⚡</span></div>
+        <div class="ins-row"><span class="ins-lbl">피크 월</span><span class="ins-val" style="color:var(--sky2)">6월 90.5%</span></div>
+      </div>
+      <div class="ins-desc">1월 Press 급증(72.2M)으로 125.4M 기록 후 2~4월 조정 국면. 5월(121.9M) 대비 6월 Press·일관포장·외주포장 동반 급증으로 143.0M — 상반기 최고치. 다만 Laser는 7.7M로 Forecast(13.6M) 대비 부진. 1~6월 합계는 연간 전망 1,277.8M 대비 51.9% 달성.</div>
+    </div>
+
+    <!-- 7~9월 Forecast -->
+    <div class="ins-card" style="border-color:rgba(245,158,11,.25);background:rgba(245,158,11,.04)">
+      <span class="ins-q" style="color:var(--gold2);background:rgba(245,158,11,.14)">◇ Forecast · 7~9월</span>
+      <div class="ins-ttl">Z8 출시 이후 하반기 전반</div>
+      <div class="ins-stat">
+        <div class="ins-row"><span class="ins-lbl">예상 생산량</span><span class="ins-val" style="color:var(--gold2)">317.2M</span></div>
+        <div class="ins-row"><span class="ins-lbl">평균 가동률</span><span class="ins-val" style="color:var(--gold2)">65.3%</span></div>
+        <div class="ins-row"><span class="ins-lbl">7월 가동률 (피크)</span><span class="ins-val" style="color:#FB923C">66.6% ⚡</span></div>
+        <div class="ins-row"><span class="ins-lbl">폴더블 6~7월</span><span class="ins-val" style="color:var(--pu2)">38.8M</span></div>
+      </div>
+      <div class="ins-desc">6월 Press·포장 공정 피크 이후 7~9월은 조정 국면 진입. Laser는 6월 부진(7.6M)을 딛고 평균 11.6M 수준 회복 전망. 가동률 60%대 안정권 — Capa 여유 확보.</div>
+    </div>
+
+    <!-- 10~12월 Forecast -->
+    <div class="ins-card" style="border-color:rgba(16,185,129,.25);background:rgba(16,185,129,.04)">
+      <span class="ins-q" style="color:var(--em2);background:rgba(16,185,129,.14)">◇ Forecast · 10~12월</span>
+      <div class="ins-ttl">S27 본격화 &amp; 연말 안정</div>
+      <div class="ins-stat">
+        <div class="ins-row"><span class="ins-lbl">예상 생산량</span><span class="ins-val" style="color:var(--em2)">297.4M</span></div>
+        <div class="ins-row"><span class="ins-lbl">평균 가동률</span><span class="ins-val" style="color:var(--em2)">64.7%</span></div>
+        <div class="ins-row"><span class="ins-lbl">12월 가동률</span><span class="ins-val" style="color:var(--em2)">64.3%</span></div>
+        <div class="ins-row"><span class="ins-lbl">여유 Capa</span><span class="ins-val" style="color:var(--em2)">~35% 유지</span></div>
+      </div>
+      <div class="ins-desc">Galaxy S27 주력 부품 본격 양산 및 Laser 정밀 가공 집중 구간. 가동률 안정권(64~65%) 유지 예상. 연말 재고 확보와 설비 예방정비 병행 — 차년도 대응 준비 필요.</div>
+    </div>
+
+  </div>
+
+  <div class="mb reveal">
+    <div class="card">
+      <div class="card-hdr-row" style="display:flex;align-items:flex-start;justify-content:space-between;gap:1.2rem;margin-bottom:.9rem">
+        <div>
+          <div class="card-ttl">공정별 생산량 vs Max Capa &amp; 가동률 — 통합 뷰</div>
+          <div class="card-sub" id="procComboSub" style="margin-bottom:0">공정별 생산량 · 전체 12개월 &nbsp;·&nbsp; <span style="color:rgba(251,113,133,.9);font-weight:600">─ ─ Max Capa</span> &nbsp;·&nbsp; <span style="color:var(--gold2);font-weight:600">— 가동률(%)</span></div>
+        </div>
+        <div class="dash-filters" style="flex-shrink:0;padding-top:.1rem">
+          <div class="dash-select-wrap">
+            <select id="procSelect" class="dash-select">
+              <option value="press" selected>Press</option>
+              <option value="vp">일관 포장</option>
+              <option value="assy">외주 포장</option>
+              <option value="laser">Laser</option>
+            </select>
+          </div>
+          <span class="dash-range-label">월</span>
+          <div class="dash-select-wrap">
+            <select id="moFromSelect" class="dash-select dash-select-mo">
+              <option value="0" selected>1월</option>
+              <option value="1">2월</option>
+              <option value="2">3월</option>
+              <option value="3">4월</option>
+              <option value="4">5월</option>
+              <option value="5">6월</option>
+              <option value="6">7월</option>
+              <option value="7">8월</option>
+              <option value="8">9월</option>
+              <option value="9">10월</option>
+              <option value="10">11월</option>
+              <option value="11">12월</option>
+            </select>
+          </div>
+          <span class="dash-range-sep">~</span>
+          <div class="dash-select-wrap">
+            <select id="moToSelect" class="dash-select dash-select-mo">
+              <option value="0">1월</option>
+              <option value="1">2월</option>
+              <option value="2">3월</option>
+              <option value="3">4월</option>
+              <option value="4">5월</option>
+              <option value="5">6월</option>
+              <option value="6">7월</option>
+              <option value="7">8월</option>
+              <option value="8">9월</option>
+              <option value="9">10월</option>
+              <option value="10">11월</option>
+              <option value="11" selected>12월</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="cb-combo"><canvas id="cProcCombo26"></canvas></div>
+      <div id="procCapaWarning" style="display:none;margin-top:1.2rem;padding:1.4rem 1.6rem;background:rgba(220,38,38,.07);border:2px solid rgba(220,38,38,.6);border-radius:14px;color:#7a1010">
+        <div style="font-weight:800;font-size:1.05rem;margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem;color:#8a1515">
+          <span style="font-size:1.3rem">⚠️</span> Capa 한계 근접 — 즉시 조치 필요
+        </div>
+        <div id="procCapaList" style="font-size:.9rem;line-height:1.8;column-count:2;column-gap:1.5rem;margin-bottom:.8rem;color:#7a1010"></div>
+        <div style="padding-top:.8rem;border-top:1px solid rgba(220,38,38,.25);font-size:.82rem;color:#8a1515;font-weight:600">→ 생산 일정 재조정, 외주처 추가 배정, 야간 증산 검토 권장</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb reveal">
+    <div class="card">
+      <div class="card-hdr-row" style="display:flex;align-items:flex-start;justify-content:space-between;gap:1.2rem;margin-bottom:.9rem">
+        <div>
+          <div class="card-ttl">시리즈별 연도별 월별 생산량 비교</div>
+          <div class="card-sub" id="comboSub" style="margin-bottom:0">All 시리즈 · 전체 12개월 &nbsp;·&nbsp; <span style="color:var(--em2);font-weight:600">━ 2026</span> &nbsp;·&nbsp; <span style="color:var(--sky2);font-weight:600">╌ 2025</span> &nbsp;·&nbsp; <span style="color:rgba(15,23,42,.40);font-weight:600">╌ 2024</span></div>
+        </div>
+        <div class="dash-filters" style="flex-shrink:0;padding-top:.1rem">
+          <div class="dash-select-wrap">
+            <select id="seriesSelect" class="dash-select">
+              <option value="all">All 시리즈</option>
+              <option value="s">S 시리즈</option>
+              <option value="a">A 시리즈</option>
+              <option value="f">폴더블 시리즈</option>
+              <option value="etc">기타</option>
+            </select>
+          </div>
+          <span class="dash-range-label">월</span>
+          <div class="dash-select-wrap">
+            <select id="seriesMoFromSelect" class="dash-select dash-select-mo">
+              <option value="0" selected>1월</option>
+              <option value="1">2월</option>
+              <option value="2">3월</option>
+              <option value="3">4월</option>
+              <option value="4">5월</option>
+              <option value="5">6월</option>
+              <option value="6">7월</option>
+              <option value="7">8월</option>
+              <option value="8">9월</option>
+              <option value="9">10월</option>
+              <option value="10">11월</option>
+              <option value="11">12월</option>
+            </select>
+          </div>
+          <span class="dash-range-sep">~</span>
+          <div class="dash-select-wrap">
+            <select id="seriesMoToSelect" class="dash-select dash-select-mo">
+              <option value="0">1월</option>
+              <option value="1">2월</option>
+              <option value="2">3월</option>
+              <option value="3">4월</option>
+              <option value="4">5월</option>
+              <option value="5">6월</option>
+              <option value="6">7월</option>
+              <option value="7">8월</option>
+              <option value="8">9월</option>
+              <option value="9">10월</option>
+              <option value="10">11월</option>
+              <option value="11" selected>12월</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="cb-combo"><canvas id="cCombo26"></canvas></div>
+    </div>
+  </div>
+
+  <div class="g3w reveal">
+    <div class="card">
+      <div class="card-ttl">공정별 월별 실적 &amp; Forecast 추이</div>
+      <div class="card-sub">Press / 외주 포장 / 일관 포장 / Laser · 실선 = 확정 · 점선 = Forecast</div>
+      <div class="cb-lg"><canvas id="cProc26"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-ttl">공정 비중</div>
+      <div class="card-sub">연간 전망 기준</div>
+      <div class="cb-lg"><canvas id="cProc26Donut"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-ttl">시리즈 비중</div>
+      <div class="card-sub">연간 전망 기준</div>
+      <div class="cb-lg"><canvas id="cSer26Donut"></canvas></div>
+    </div>
+  </div>
+
+  <div class="mb reveal">
+    <div class="card">
+      <div class="card-ttl">시리즈별 월별 생산량 추이</div>
+      <div class="card-sub">SM-S / SM-A / SM-F(폴더블) / 기타 &nbsp;·&nbsp; 실선 = 확정 실적 &nbsp;·&nbsp; 점선 = 경영계획 Forecast</div>
+      <div class="cb-xl"><canvas id="cSer26Line"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card reveal">
+    <div class="card-ttl">2026년 공정별 · Capa · 시리즈별 통합 데이터</div>
+    <div class="card-sub">단위: M &nbsp;·&nbsp; <span style="color:var(--em2);font-weight:600">(A) 1~6월 ERP 확정 실적</span> &nbsp;&nbsp; <span style="color:var(--gold2);font-weight:600">(F) 7~12월 경영계획 Forecast</span></div>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr>
+          <th>구분</th>
+          <th style="color:var(--em2)">1월(A)</th><th style="color:var(--em2)">2월(A)</th><th style="color:var(--em2)">3월(A)</th><th style="color:var(--em2)">4월(A)</th><th style="color:var(--em2)">5월(A)</th><th style="color:var(--em2)">6월(A)</th>
+          <th>7월(F)</th><th>8월(F)</th>
+          <th>9월(F)</th><th>10월(F)</th><th>11월(F)</th><th>12월(F)</th>
+          <th style="color:var(--t1)">합계</th>
+        </tr></thead>
+        <tbody id="tbodyCombined"></tbody>
+      </table>
+    </div>
+  </div>
+
+
+</section>
+</div><!-- /view-s2026 -->
+
+<!-- ── VIEW: 2025 ── -->
+<div class="view" id="view-s2025">
+<section id="s2025" class="section">
+  <span class="sec-label sl-green">2025 월별 실적 분석</span>
+  <h3 class="sec-title">2025년 실적 Trend</h3>
+  <p class="sec-sub">총 1,385.2M &nbsp;·&nbsp; 월평균 115.4M &nbsp;·&nbsp; 최고 139.4M (7월) &nbsp;·&nbsp; 최저 87.8M (1월)</p>
+  <div class="kpi-row reveal">
+    <div class="kpi kpi-sky"><div class="kpi-tag">Press 연간 합계</div><div class="kpi-main"><span data-count="779.6" data-dec="1">779.6</span><span class="kpi-unit">M</span></div><span class="kpi-badge kb-up">▲ +54.8% YoY</span></div>
+    <div class="kpi kpi-em"><div class="kpi-tag">일관 포장 연간 합계</div><div class="kpi-main"><span data-count="142.8" data-dec="1">142.8</span><span class="kpi-unit">M</span></div><span class="kpi-badge kb-up">▲ +958.7% YoY</span></div>
+    <div class="kpi kpi-pu"><div class="kpi-tag">Laser 연간 합계</div><div class="kpi-main"><span data-count="108.5" data-dec="1">108.5</span><span class="kpi-unit">M</span></div><span class="kpi-badge kb-up">▲ +101.7% YoY</span></div>
+    <div class="kpi kpi-gold"><div class="kpi-tag">외주 포장 연간 합계</div><div class="kpi-main"><span data-count="354.3" data-dec="1">354.3</span><span class="kpi-unit">M</span></div><span class="kpi-badge kb-up">▲ +23.3% YoY</span></div>
+  </div>
+  <div class="g3-1 reveal">
+    <div class="card"><div class="card-ttl">월별 공정 실적 추이</div><div class="card-sub">2025년 1 – 12월 · 4개 공정 라인별 월간 생산량</div><div class="cb-lg"><canvas id="c25line"></canvas></div></div>
+    <div class="card"><div class="card-ttl">공정 비중</div><div class="card-sub">연간 총 1,385.2M 기준</div><div class="cb-lg"><canvas id="c25donut"></canvas></div></div>
+  </div>
+  <div class="mb reveal"><div class="card"><div class="card-ttl">월별 통합 생산량 — 공정별 누적 막대</div><div class="card-sub">전체 월간 총량 · 4개 공정 스택 비교</div><div class="cb-xl"><canvas id="c25bar"></canvas></div></div></div>
+  <div class="card reveal">
+    <div class="card-ttl">2025년 공장/부서별 월별 상세 데이터</div><div class="card-sub">단위: M (백만 개)</div>
+    <div class="tbl-wrap"><table class="tbl"><thead><tr><th>공장/부서</th><th>1월</th><th>2월</th><th>3월</th><th>4월</th><th>5월</th><th>6월</th><th>7월</th><th>8월</th><th>9월</th><th>10월</th><th>11월</th><th>12월</th><th style="color:var(--t1)">합계</th></tr></thead><tbody id="tbody25"></tbody><tfoot id="tfoot25"></tfoot></table></div>
+  </div>
+</section>
+</div><!-- /view-s2025 -->
+
+<!-- ── VIEW: 2024 ── -->
+<div class="view" id="view-s2024">
+<section id="s2024" class="section">
+  <span class="sec-label sl-gray">2024 월별 실적 분석</span>
+  <h3 class="sec-title">2024년 실적 Trend</h3>
+  <p class="sec-sub">총 858.2M &nbsp;·&nbsp; 월평균 71.5M &nbsp;·&nbsp; 최고 83.8M (12월) &nbsp;·&nbsp; 최저 43.2M (4월) &nbsp;·&nbsp; 일관 포장 하반기 개시</p>
+  <div class="kpi-row reveal">
+    <div class="kpi kpi-sky"><div class="kpi-tag">Press 연간 합계</div><div class="kpi-main"><span data-count="503.5" data-dec="1">503.5</span><span class="kpi-unit">M</span></div><span class="kpi-badge kb-neutral">기준 연도</span></div>
+    <div class="kpi kpi-em"><div class="kpi-tag">일관 포장 연간 합계</div><div class="kpi-main"><span data-count="13.5" data-dec="1">13.5</span><span class="kpi-unit">M</span></div><span class="kpi-badge kb-neutral">하반기 공정 개시</span></div>
+    <div class="kpi kpi-pu"><div class="kpi-tag">Laser 연간 합계</div><div class="kpi-main"><span data-count="53.8" data-dec="1">53.8</span><span class="kpi-unit">M</span></div><span class="kpi-badge kb-neutral">기준 연도</span></div>
+    <div class="kpi kpi-gold"><div class="kpi-tag">외주 포장 연간 합계</div><div class="kpi-main"><span data-count="287.4" data-dec="1">287.4</span><span class="kpi-unit">M</span></div><span class="kpi-badge kb-neutral">기준 연도</span></div>
+  </div>
+  <div class="g3-1 reveal">
+    <div class="card"><div class="card-ttl">월별 공정 실적 추이</div><div class="card-sub">2024년 1 – 12월 · 4개 공정 라인별 월간 생산량</div><div class="cb-lg"><canvas id="c24line"></canvas></div></div>
+    <div class="card"><div class="card-ttl">공정 비중</div><div class="card-sub">연간 총 858.2M 기준</div><div class="cb-lg"><canvas id="c24donut"></canvas></div></div>
+  </div>
+  <div class="mb reveal"><div class="card"><div class="card-ttl">월별 통합 생산량 — 공정별 누적 막대</div><div class="card-sub">전체 월간 총량 · 4개 공정 스택 비교</div><div class="cb-xl"><canvas id="c24bar"></canvas></div></div></div>
+  <div class="card reveal">
+    <div class="card-ttl">2024년 공장/부서별 월별 상세 데이터</div><div class="card-sub">단위: M (백만 개)</div>
+    <div class="tbl-wrap"><table class="tbl"><thead><tr><th>공장/부서</th><th>1월</th><th>2월</th><th>3월</th><th>4월</th><th>5월</th><th>6월</th><th>7월</th><th>8월</th><th>9월</th><th>10월</th><th>11월</th><th>12월</th><th style="color:var(--t1)">합계</th></tr></thead><tbody id="tbody24"></tbody><tfoot id="tfoot24"></tfoot></table></div>
+  </div>
+</section>
+
+</div><!-- /view-s2024 -->
+
+<!-- ── VIEW: 전년 대비 비교 ── -->
+<div class="view" id="view-sYoY">
+<section id="sYoY" class="section">
+  <span class="sec-label sl-tri">전년 대비 비교</span>
+  <h3 class="sec-title">2025 실적 vs 2026 실적·Forecast</h3>
+  <p class="sec-sub">2026년 <strong style="color:var(--em2)">1~6월 ERP 확정 실적</strong> &nbsp;·&nbsp; <strong style="color:var(--sky2)">7~12월 Forecast</strong> &nbsp;|&nbsp; 2025년 1~12월 ERP 확정 실적 기준</p>
+
+  <!-- KPI 요약 -->
+  <div class="kpi-row2 reveal">
+    <div class="kpi2 kpi2-1">
+      <div class="kpi2-tag">2026 연간 합계 (실적+FC)</div>
+      <div class="kpi2-num"><span id="kpi-yoy-26tot">—</span><span class="kpi2-unit">M</span></div>
+      <div style="font-size:.68rem;color:var(--t3);margin-top:.3rem">1~6월 확정 + 7~12월 Forecast</div>
+    </div>
+    <div class="kpi2 kpi2-2">
+      <div class="kpi2-tag">2025 연간 합계 (확정 실적)</div>
+      <div class="kpi2-num"><span id="kpi-yoy-25tot">—</span><span class="kpi2-unit">M</span></div>
+      <div style="font-size:.68rem;color:var(--t3);margin-top:.3rem">1~12월 ERP 확정 실적</div>
+    </div>
+    <div class="kpi2 kpi2-3">
+      <div class="kpi2-tag">연간 증감 (2026 − 2025)</div>
+      <div class="kpi2-num"><span id="kpi-yoy-diff">—</span><span class="kpi2-unit">M</span></div>
+      <div style="font-size:.68rem;color:var(--t3);margin-top:.3rem">Forecast 포함 기준</div>
+    </div>
+    <div class="kpi2 kpi2-4">
+      <div class="kpi2-tag">전년 대비 비율 (연간)</div>
+      <div class="kpi2-num"><span id="kpi-yoy-pct">—</span><span class="kpi2-unit">%</span></div>
+      <div style="font-size:.68rem;color:var(--t3);margin-top:.3rem">2026 합계 ÷ 2025 합계 × 100</div>
+    </div>
+  </div>
+
+  <!-- 공정별 월별 비교 -->
+  <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t2);margin:.6rem 0 .9rem .1rem">
+    공정별 월별 비교
+    <span style="font-weight:400;opacity:.5;margin-left:.6rem;letter-spacing:0;text-transform:none">▌ 막대: 2026 실적(진하게) · FC(옅게)&nbsp;&nbsp;선: 2025 실적</span>
+  </div>
+  <div class="g2 reveal">
+    <div class="card"><div class="card-ttl">Press</div><div class="card-sub">2025 실적 vs 2026 실적·FC</div><div class="cb"><canvas id="yPress"></canvas></div></div>
+    <div class="card"><div class="card-ttl">일관 포장</div><div class="card-sub">2025 실적 vs 2026 실적·FC</div><div class="cb"><canvas id="yVP"></canvas></div></div>
+  </div>
+  <div class="g2 reveal">
+    <div class="card"><div class="card-ttl">외주 포장</div><div class="card-sub">2025 실적 vs 2026 실적·FC</div><div class="cb"><canvas id="yAssy"></canvas></div></div>
+    <div class="card"><div class="card-ttl">Laser</div><div class="card-sub">2025 실적 vs 2026 실적·FC</div><div class="cb"><canvas id="yLaser"></canvas></div></div>
+  </div>
+  <div class="mb reveal">
+    <div class="card">
+      <div class="card-ttl">공정별 전년비 (%)</div>
+      <div class="card-sub">월별 2026÷2025 비율 &nbsp;·&nbsp; 실선 1~6월(확정) / 점선 7~12월(FC) &nbsp;·&nbsp; 기준선 = 100%</div>
+      <div class="cb-lg"><canvas id="yProcRatio"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 시리즈별 월별 비교 -->
+  <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t2);margin:1.2rem 0 .9rem .1rem">
+    시리즈별 월별 비교
+    <span style="font-weight:400;opacity:.5;margin-left:.6rem;letter-spacing:0;text-transform:none">▌ 막대: 2026 실적(진하게) · FC(옅게)&nbsp;&nbsp;선: 2025 실적</span>
+  </div>
+  <div class="g2 reveal">
+    <div class="card"><div class="card-ttl">S 시리즈</div><div class="card-sub">2025 실적 vs 2026 실적·FC</div><div class="cb"><canvas id="ySerS"></canvas></div></div>
+    <div class="card"><div class="card-ttl">A 시리즈</div><div class="card-sub">2025 실적 vs 2026 실적·FC</div><div class="cb"><canvas id="ySerA"></canvas></div></div>
+  </div>
+  <div class="g2 reveal">
+    <div class="card"><div class="card-ttl">폴더블 (F)</div><div class="card-sub">2025 실적 vs 2026 실적·FC</div><div class="cb"><canvas id="ySerF"></canvas></div></div>
+    <div class="card"><div class="card-ttl">기타</div><div class="card-sub">2025 실적 vs 2026 실적·FC</div><div class="cb"><canvas id="ySerEtc"></canvas></div></div>
+  </div>
+  <div class="mb reveal">
+    <div class="card">
+      <div class="card-ttl">시리즈별 전년비 (%)</div>
+      <div class="card-sub">월별 2026÷2025 시리즈 비율 &nbsp;·&nbsp; 실선 1~6월(확정) / 점선 7~12월(FC) &nbsp;·&nbsp; 기준선 = 100%</div>
+      <div class="cb-lg"><canvas id="ySerRatio"></canvas></div>
+    </div>
+  </div>
+</section>
+<footer>SUNGWOO &nbsp;·&nbsp; 성우비나 생산 실적 분석 및 Capa 검토 보고서 &nbsp;·&nbsp; 2024 – 2026</footer>
+</div><!-- /view-sYoY -->
+
+</div><!-- /page -->
+
+<script>
+/* ══ DATA ══ */
+const MO=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+const d25={assy:[27.29,29.68,36.15,24.62,34.02,41.01,43.03,24.73,24.01,26.34,19.42,24.04],press:[49.65,59.88,64.11,55.20,65.30,77.64,75.79,65.17,68.59,69.77,59.99,68.48],vp:[4.94,4.71,6.42,5.86,6.40,8.51,10.29,17.37,19.59,19.72,17.72,21.27],laser:[5.96,7.91,11.15,7.94,7.72,8.78,10.25,8.44,8.77,11.66,10.36,9.58]};
+const d24={assy:[25.37,20.05,28.31,12.93,20.13,29.89,32.00,24.59,18.05,25.61,24.40,26.11],press:[52.97,37.57,43.25,27.07,38.57,44.98,49.87,40.95,35.64,43.10,41.95,47.53],vp:[0,0,0,0,0,0,0,2.59,2.85,1.80,1.62,4.62],laser:[4.18,2.77,4.81,3.19,4.24,5.04,4.36,5.58,3.51,4.71,5.86,5.56]};
+const d26={assy:[25.9,19.4,27.2,18.8,24.9,33.6,22.9,22.4,22.0,21.6,21.1,20.4],press:[72.2,50.4,50.1,44.4,70.4,78.1,59.6,58.4,57.2,56.0,54.9,53.2],vp:[18.9,14.3,17.4,13.1,19.3,23.3,13.6,13.3,13.0,12.8,12.5,12.2],laser:[8.3,5.4,8.1,4.3,7.3,7.7,11.8,11.6,11.4,11.2,10.9,10.6]};
+/* 1~6월(확정 실적)은 2026-07-03 검증 완료 규칙(Process 4종 + 접두사 GH61/63/64/98 + 접미사 SP1/SL1/SV1 + Assy Name "DECO" 제외)으로 재계산된 확정치, 7~12월은 기존 Forecast 유지 */
+const dS={s:[54.5,39.5,44.7,31.6,34.2,58.4,44.6,43.8,42.0,42.7,42.0,40.2],a:[39.7,31.1,37.2,22.8,39.8,44.6,34.4,35.1,33.3,34.2,33.1,31.5],f:[6.3,3.9,6.6,13.5,25.2,23.4,15.2,12.4,12.1,10.0,9.8,11.1],etc:[24.9,15.0,14.3,12.7,22.7,16.6,13.7,14.4,16.2,14.7,14.5,13.6]};
+/* ※ dS는 d26 공정별 월합계(Ground Truth) 기준으로 시리즈 비중 유지하며 스케일링 적용 */
+/* ── 2024/2025 ERP 실적 시리즈별 (가공 시트 SM-* Spec 기준, 단위:M) ── */
+const dS24={s:[22.0,9.3,12.1,9.3,11.2,8.2,14.1,21.7,17.0,18.0,20.0,44.4],a:[31.4,34.1,40.2,7.9,10.6,21.5,29.5,23.1,21.4,29.9,32.6,18.9],f:[3.5,3.0,4.0,8.5,20.7,33.2,23.8,4.7,3.3,4.5,3.3,3.4],etc:[25.8,14.7,21.3,18.4,23.3,20.4,22.7,24.2,18.3,22.8,17.9,17.1]};
+const dS25={s:[43.4,36.1,34.0,26.7,27.4,29.0,38.9,39.0,39.2,38.9,41.7,53.5],a:[25.3,48.3,60.1,41.6,39.4,48.8,44.8,48.2,54.2,61.9,39.9,44.4],f:[2.5,3.4,4.9,10.8,34.2,44.5,37.9,14.3,9.1,10.2,7.3,6.4],etc:[16.6,14.4,18.8,14.5,12.4,13.6,17.7,14.2,18.6,16.6,18.6,19.0]};
+const dCapa={max:[152.0,115.0,155.0,130.0,155.0,158.0,162.0,162.0,162.0,158.0,152.0,150.0]};
+const dPressCapaFc=[124.8,81.6,124.8,110.4,115.2,124.8,129.6,115.2,115.2,129.6,120.0,110.4];
+const dLaserCapaFc=[20.6,13.5,20.6,18.3,19.1,20.6,21.4,19.1,19.1,21.4,19.8,18.3];
+
+const S=a=>a.reduce((x,y)=>x+y,0);
+const moSerTot=MO.map((_,i)=>+(dS.s[i]+dS.a[i]+dS.f[i]+dS.etc[i]).toFixed(1));
+const utilRate=dCapa.max.map((c,i)=>+((moSerTot[i]/c)*100).toFixed(1));
+
+/* ── 공정별 Capa 분리 (2026년 1~6월 ERP 확정 실적 평균 비중 기준) ── */
+(()=>{
+  const ACT=6; // 1~6월
+  const avg=k=>d26[k].slice(0,ACT).reduce((a,b)=>a+b,0)/ACT;
+  const avgP={press:avg('press'),vp:avg('vp'),laser:avg('laser'),assy:avg('assy')};
+  const tot=Object.values(avgP).reduce((a,b)=>a+b,0);
+  const sh={press:avgP.press/tot,vp:avgP.vp/tot,laser:avgP.laser/tot,assy:avgP.assy/tot};
+  // 비중 정보 콘솔 출력 (디버그용)
+  // console.log('공정별 Capa 비중:',Object.entries(sh).map(([k,v])=>`${k}:${(v*100).toFixed(1)}%`).join(' '));
+
+  window.dCapaProc={
+    press:dPressCapaFc,
+    vp:   dCapa.max.map(c=>+(c*sh.vp).toFixed(1)),
+    laser:dLaserCapaFc,
+    assy: dCapa.max.map(c=>+(c*sh.assy).toFixed(1))
+  };
+  window.utilRateProc={
+    press:MO.map((_,i)=>+((d26.press[i]/dCapaProc.press[i])*100).toFixed(1)),
+    vp:   MO.map((_,i)=>+((d26.vp[i]   /dCapaProc.vp[i]   )*100).toFixed(1)),
+    laser:MO.map((_,i)=>+((d26.laser[i] /dCapaProc.laser[i])*100).toFixed(1)),
+    assy: MO.map((_,i)=>+((d26.assy[i]  /dCapaProc.assy[i] )*100).toFixed(1))
+  };
+  window.procCapaShare=sh;
+})();
+const tot25=MO.map((_,i)=>+(d25.assy[i]+d25.press[i]+d25.vp[i]+d25.laser[i]).toFixed(2));
+const tot24=MO.map((_,i)=>+(d24.assy[i]+d24.press[i]+d24.vp[i]+d24.laser[i]).toFixed(2));
+const tot26=moSerTot;
+const yoy=MO.map((_,i)=>tot24[i]?+((tot25[i]/tot24[i]-1)*100).toFixed(1):0);
+const yoy2526=MO.map((_,i)=>+((tot26[i]/tot25[i]-1)*100).toFixed(1));
+
+/* ══ 차트 공통 ══ */
+const GR={color:'rgba(15,23,42,.06)',lineWidth:1};
+const TC={color:'#64748B',font:{size:11}};
+const LC={labels:{color:'#475569',font:{size:11}}};
+const TT={backgroundColor:'rgba(15,23,42,.95)',titleColor:'#F8FAFC',bodyColor:'#94A3B8',borderColor:'rgba(255,255,255,.08)',borderWidth:1,padding:12,cornerRadius:10};
+const aGrad=(ctx,r,g,b)=>{const ch=ctx.chart,area=ch.chartArea;if(!area)return'transparent';const gr=ch.ctx.createLinearGradient(0,area.top,0,area.bottom);gr.addColorStop(0,`rgba(${r},${g},${b},.22)`);gr.addColorStop(1,`rgba(${r},${g},${b},.01)`);return gr;};
+
+/* ══ 공통 팩토리 ══ */
+const makeLine=(id,data)=>new Chart(document.getElementById(id),{type:'line',data:{labels:MO,datasets:[{label:'Press',data:data.press,borderColor:'#0EA5E9',borderWidth:2.5,tension:.4,fill:true,backgroundColor:c=>aGrad(c,14,165,233),pointRadius:3,pointHoverRadius:6,pointBackgroundColor:'#0EA5E9'},{label:'일관 포장',data:data.vp,borderColor:'#10B981',borderWidth:2.5,tension:.4,fill:true,backgroundColor:c=>aGrad(c,16,185,129),pointRadius:3,pointHoverRadius:6,pointBackgroundColor:'#10B981'},{label:'Laser',data:data.laser,borderColor:'#8B5CF6',borderWidth:2.5,tension:.4,fill:true,backgroundColor:c=>aGrad(c,139,92,246),pointRadius:3,pointHoverRadius:6,pointBackgroundColor:'#8B5CF6'},{label:'외주 포장',data:data.assy,borderColor:'#F59E0B',borderWidth:2.5,tension:.4,fill:true,backgroundColor:c=>aGrad(c,245,158,11),pointRadius:3,pointHoverRadius:6,pointBackgroundColor:'#F59E0B'}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:LC,tooltip:{...TT,callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y.toFixed(2)}M`}}},scales:{x:{grid:GR,border:{display:false},ticks:TC},y:{grid:GR,border:{display:false},ticks:{...TC,callback:v=>v+'M'}}}}});
+const makeBar=(id,data)=>{const totals=MO.map((_,i)=>+(data.press[i]+data.assy[i]+data.vp[i]+data.laser[i]).toFixed(2));const bw={barPercentage:.48,categoryPercentage:.85};new Chart(document.getElementById(id),{type:'bar',data:{labels:MO,datasets:[{label:'Press',data:data.press,backgroundColor:'rgba(14,165,233,.82)',stack:'s',...bw},{label:'일관 포장',data:data.vp,backgroundColor:'rgba(16,185,129,.82)',stack:'s',...bw},{label:'Laser',data:data.laser,backgroundColor:'rgba(139,92,246,.82)',stack:'s',...bw},{label:'외주 포장',data:data.assy,backgroundColor:'rgba(245,158,11,.82)',stack:'s',...bw}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:LC,tooltip:{...TT,callbacks:{afterBody:items=>`─────────\n합  계: ${totals[items[0].dataIndex].toFixed(2)}M`}}},scales:{x:{stacked:true,grid:{display:false},border:{display:false},ticks:TC},y:{stacked:true,grid:GR,border:{display:false},ticks:{...TC,callback:v=>v+'M'}}}}});};
+const makeDonut=(id,data)=>{const vals=[S(data.press),S(data.vp),S(data.laser),S(data.assy)],tot=S(vals);new Chart(document.getElementById(id),{type:'doughnut',data:{labels:['Press','일관 포장','Laser','외주 포장'],datasets:[{data:vals,backgroundColor:['rgba(14,165,233,.85)','rgba(16,185,129,.85)','rgba(139,92,246,.85)','rgba(245,158,11,.85)'],borderColor:['#0EA5E9','#10B981','#8B5CF6','#F59E0B'],borderWidth:1.5,borderRadius:4,hoverBorderWidth:2.5}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{...LC,position:'bottom'},tooltip:{...TT,callbacks:{label:c=>`${c.label}: ${c.parsed.toFixed(1)}M (${(c.parsed/tot*100).toFixed(1)}%)`}}}}});};
+const makeCompare=(id,a26,a25,a24,r,g,b)=>new Chart(document.getElementById(id),{type:'line',data:{labels:MO,datasets:[{label:'2026',data:a26,borderColor:`rgb(${r},${g},${b})`,borderWidth:2.5,tension:.4,fill:true,backgroundColor:c=>aGrad(c,r,g,b),pointRadius:3,pointHoverRadius:6,pointBackgroundColor:`rgb(${r},${g},${b})`},{label:'2025',data:a25,borderColor:'rgba(100,60,20,.45)',borderWidth:1.8,borderDash:[5,3],tension:.4,fill:false,pointRadius:2,pointHoverRadius:5,pointBackgroundColor:'rgba(100,60,20,.65)'},{label:'2024',data:a24,borderColor:'rgba(100,60,20,.18)',borderWidth:1.5,borderDash:[2,2],tension:.4,fill:false,pointRadius:1,pointHoverRadius:4,pointBackgroundColor:'rgba(100,60,20,.30)'}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:LC,tooltip:{...TT,callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y.toFixed(2)}M`}}},scales:{x:{grid:GR,border:{display:false},ticks:{...TC,font:{size:10}}},y:{grid:GR,border:{display:false},ticks:{...TC,font:{size:10},callback:v=>v+'M'}}}}});
+
+/* ══ 25vs26 비교 helper ══ */
+function makeYoY(id,d26a,d25a,r,g,b){
+  new Chart(document.getElementById(id),{
+    type:'bar',
+    data:{labels:MO,datasets:[
+      {label:'2026 실적/FC',data:d26a,
+       backgroundColor:MO.map((_,i)=>i<6?`rgba(${r},${g},${b},.82)`:`rgba(${r},${g},${b},.3)`),
+       borderColor:MO.map((_,i)=>i<6?'transparent':`rgba(${r},${g},${b},.65)`),
+       borderWidth:1.5,borderRadius:4,barPercentage:.6,categoryPercentage:.85,order:2},
+      {type:'line',label:'2025 실적',data:d25a,
+       borderColor:'rgba(15,23,42,.38)',borderWidth:1.8,borderDash:[5,3],
+       tension:.4,fill:false,pointRadius:3,pointHoverRadius:6,
+       pointBackgroundColor:'rgba(15,23,42,.45)',order:1}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:LC,tooltip:{...TT,callbacks:{
+        label:c=>`  ${c.dataset.label}: ${c.parsed.y.toFixed(1)}M`,
+        afterBody:items=>{
+          const i=items[0].dataIndex;
+          if(!d25a[i]) return;
+          const pct=+((d26a[i]/d25a[i]-1)*100).toFixed(1);
+          return`  전년비: ${pct>=0?'+':''}${pct}%${i>=6?' (FC)':''}`;
+        }
+      }}},
+      scales:{x:{grid:GR,border:{display:false},ticks:TC},
+              y:{grid:GR,border:{display:false},ticks:{...TC,callback:v=>v+'M'}}}}
+  });
+}
+function makeRatioLine(id,entries){
+  const ref={label:'기준(100%)',data:MO.map(()=>100),
+    borderColor:'rgba(15,23,42,.18)',borderWidth:1,borderDash:[3,3],
+    tension:0,fill:false,pointRadius:0,pointHoverRadius:0};
+  const ds=entries.map(({label,d26a,d25a,r,g,b})=>({
+    label,
+    data:MO.map((_,i)=>d25a[i]?+((d26a[i]/d25a[i]*100).toFixed(1)):null),
+    borderColor:`rgb(${r},${g},${b})`,borderWidth:2.2,tension:.4,fill:false,
+    pointRadius:MO.map((_,i)=>i<6?4:3),
+    pointBackgroundColor:`rgb(${r},${g},${b})`,
+    segment:{borderDash:ctx=>ctx.p0DataIndex>=6?[6,3]:undefined}
+  }));
+  new Chart(document.getElementById(id),{
+    type:'line',data:{labels:MO,datasets:[...ds,ref]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:LC,tooltip:{...TT,callbacks:{
+        label:c=>c.dataset.label==='기준(100%)'?null:`  ${c.dataset.label}: ${c.raw}%`,
+        afterBody:items=>{const i=items[0].dataIndex;return`  ${i<6?'✓ 확정 실적 기준':'◈ Forecast 기준'}`;}
+      }}},
+      scales:{x:{grid:GR,border:{display:false},ticks:TC},
+              y:{grid:GR,border:{display:false},
+                 ticks:{...TC,callback:v=>v+'%'},suggestedMin:50,suggestedMax:200}}}
+  });
+}
+
+/* ══ 2026 ① 공정별 콤보 차트 (필터 연동) ══ */
+let procComboChart, filterProc='press', filterMoFrom=0, filterMoTo=11;
+
+function buildProcComboData(proc, moFrom, moTo){
+  const isFullRange = moFrom===0 && moTo===11;
+  const inRange = i => i>=moFrom && i<=moTo;
+  const isAllProc = proc==='all';
+
+  // 월 범위 + 실적/예측 알파
+  const mA = (i, hiB, loB) => {
+    const base = i < 6 ? hiB : loB;
+    if(isFullRange) return base;
+    return inRange(i) ? Math.min(1, hiB*1.06) : base*0.10;
+  };
+  const segDash = ctx => ctx.p0DataIndex>=6?[6,3]:undefined;
+  const segInRange = ctx => inRange(ctx.p0DataIndex)||inRange(ctx.p1DataIndex);
+  const segDim = (ctx,bright,dim) => isFullRange||segInRange(ctx) ? bright : dim;
+
+  const capData = isAllProc ? dCapa.max : (dCapaProc[proc] ?? dCapa.max);
+  const utilData = isAllProc ? utilRate : (utilRateProc[proc] ?? utilRate);
+
+  // 바 너비: 생산량·Capa 막대가 맞닿을 정도로 넓게
+  const BW = {barPercentage:.9, categoryPercentage:.65};
+
+  // Capa 막대 (stack:'capa', 별도 그룹)
+  const capaBar={
+    type:'bar', label:'Max Capa', data:capData, yAxisID:'y', stack:'capa',
+    backgroundColor:MO.map((_,i)=>utilData[i]>=95?`rgba(239,68,68,${mA(i,.8,.8)})`:`rgba(59,130,246,${mA(i,.28,.28)})`),
+    borderColor:MO.map((_,i)=>utilData[i]>=95?`rgba(239,68,68,${mA(i,.95,.95)})`:`rgba(59,130,246,${mA(i,.75,.75)})`),
+    borderWidth:1.5, borderRadius:4, ...BW, order:2
+  };
+  const utilPt=i=>{const v=utilData[i];return v>=95?'#fff':v>=85?'#FF4D4D':v>=75?'#FBBF24':'#34D399';};
+  const utilLine={
+    type:'line', label:'가동률(%)', data:utilData, yAxisID:'yR',
+    borderColor:'#FF9500', borderWidth:3.5, tension:.35, fill:false,
+    pointRadius:MO.map((_,i)=>{
+      const v=utilData[i];
+      if(!isFullRange&&!inRange(i))return 2;
+      return v>=95?10:v>=85?7.5:5;
+    }),
+    pointBackgroundColor:MO.map((_,i)=>{
+      const v=utilData[i];
+      if(!isFullRange&&!inRange(i))return'rgba(255,149,0,.12)';
+      if(v>=95)return'#FF3B30';
+      if(v>=85)return'#FF6B35';
+      if(v>=75)return'#FF9500';
+      return'#34D399';
+    }),
+    pointBorderColor:MO.map((_,i)=>{
+      const v=utilData[i];
+      return v>=95?'#F59E0B':'transparent';
+    }),
+    pointBorderWidth:MO.map((_,i)=>{
+      const v=utilData[i];
+      return v>=95?2.5:0;
+    }),
+    order:0, segment:{
+      borderDash:segDash,
+      borderColor:ctx=>{
+        const idx=ctx.p0DataIndex;
+        if(utilData[idx]>=95||utilData[ctx.p1DataIndex]>=95)return'#EF4444';
+        return segDim(ctx,undefined,undefined);
+      },
+      borderWidth:ctx=>{
+        const idx=ctx.p0DataIndex;
+        if(utilData[idx]>=95||utilData[ctx.p1DataIndex]>=95)return 3.5;
+        return 2.5;
+      }
+    }
+  };
+
+  if(isAllProc){
+    // 전체: 4개 공정 스택 (stack:'prod')
+    const pDefs=[
+      {data:d26.press,label:'Press',   r:14, g:165,b:233},
+      {data:d26.vp,   label:'일관 포장', r:16, g:185,b:129},
+      {data:d26.laser,label:'Laser',   r:139,g:92, b:246},
+      {data:d26.assy, label:'외주 포장', r:245,g:158,b:11}
+    ];
+    const barDs=pDefs.map(pd=>({
+      type:'bar', label:pd.label, data:pd.data, stack:'prod', yAxisID:'y',
+      backgroundColor:MO.map((_,i)=>`rgba(${pd.r},${pd.g},${pd.b},${mA(i,.85,.38)})`),
+      borderRadius:2, ...BW, order:1
+    }));
+    return {labels:MO, datasets:[...barDs, capaBar, utilLine]};
+  } else {
+    // 개별 공정: 선택 공정 단독 막대 (바닥부터 시작, stack:'prod')
+    const pMap={
+      press:{label:'Press',   r:14, g:165,b:233},
+      vp:   {label:'일관 포장', r:16, g:185,b:129},
+      laser:{label:'Laser',   r:139,g:92, b:246},
+      assy: {label:'외주 포장', r:245,g:158,b:11}
+    };
+    const pm=pMap[proc]??pMap.press;
+    const pd={press:d26.press,vp:d26.vp,laser:d26.laser,assy:d26.assy}[proc]??d26.press;
+    const procBar={
+      type:'bar', label:pm.label, data:pd, stack:'prod', yAxisID:'y',
+      backgroundColor:MO.map((_,i)=>`rgba(${pm.r},${pm.g},${pm.b},${mA(i,.85,.42)})`),
+      borderRadius:4, ...BW, order:1
+    };
+    return {labels:MO, datasets:[procBar, capaBar, utilLine]};
+  }
+}
+
+function updateCapaWarnings(){
+  // 공정별 경고
+  const procCapaThresh=0.95;
+  const procWarn=[];
+  const procMap={press:{name:'Press Charge',cap:dCapaProc.press,data:d26.press},
+                 vp:{name:'일관 포장',cap:dCapaProc.vp,data:d26.vp},
+                 laser:{name:'Laser',cap:dCapaProc.laser,data:d26.laser},
+                 assy:{name:'외주 포장',cap:dCapaProc.assy,data:d26.assy}};
+  const selProc=filterProc==='all'?Object.keys(procMap):([filterProc]);
+  selProc.forEach(pk=>{
+    const pm=procMap[pk];
+    if(!pm)return;
+    pm.data.forEach((prod,i)=>{
+      const util=(prod/pm.cap[i]);
+      if(util>=procCapaThresh)procWarn.push(`• ${pm.name} ${MO[i]}: ${(util*100).toFixed(1)}%`);
+    });
+  });
+  const procWarningEl=document.getElementById('procCapaWarning');
+  const procListEl=document.getElementById('procCapaList');
+  if(procWarn.length>0){
+    procWarningEl.style.display='block';
+    procListEl.innerHTML=procWarn.map(w=>`<div>${w}</div>`).join('');
+  }else{
+    procWarningEl.style.display='none';
+  }
+}
+
+function updateSeriesWarnings(){
+  // 시리즈별 경고
+  const seriesCapaThresh=0.95;
+  const serWarn=[];
+  const seriesMap={s:{name:'S 시리즈',data:dS.s},
+                   a:{name:'A 시리즈',data:dS.a},
+                   f:{name:'폴더블(F)',data:dS.f},
+                   etc:{name:'기타',data:dS.etc}};
+  const selSeries=filterSeries==='all'?Object.keys(seriesMap):([filterSeries]);
+  selSeries.forEach(sk=>{
+    const sm=seriesMap[sk];
+    if(!sm)return;
+    sm.data.forEach((prod,i)=>{
+      const util=(prod/dCapa.max[i]);
+      if(util>=seriesCapaThresh)serWarn.push(`• ${sm.name} ${MO[i]}: ${(util*100).toFixed(1)}%`);
+    });
+  });
+  const serWarningEl=document.getElementById('seriesCapaWarning');
+  const serListEl=document.getElementById('seriesCapaList');
+  if(serWarn.length>0){
+    serWarningEl.style.display='block';
+    serListEl.innerHTML=serWarn.map(w=>`<div>${w}</div>`).join('');
+  }else{
+    serWarningEl.style.display='none';
+  }
+}
+
+function updateProcComboChart(){
+  procComboChart.data=buildProcComboData(filterProc,filterMoFrom,filterMoTo);
+  procComboChart.update('active');
+  updateCapaWarnings();
+  const el=document.getElementById('procComboSub');
+  if(el){
+    const pLbl={all:'공정별 생산량',press:'Press',vp:'일관 포장',laser:'Laser',assy:'외주 포장'}[filterProc];
+    const isFullRange=filterMoFrom===0&&filterMoTo===11;
+    const mLbl=isFullRange?'전체 12개월':`${MO[filterMoFrom]} ~ ${MO[filterMoTo]}`;
+    const hi=!isFullRange||filterProc!=='all';
+    const capLbl = filterProc==='all'
+      ? `총 Max Capa`
+      : `${pLbl} Capa <span style="color:var(--t3);font-size:.65rem">(전체의 ${((procCapaShare[filterProc]??0)*100).toFixed(1)}%)</span>`;
+    el.innerHTML=`${pLbl} · ${mLbl}${hi?' <span style="color:var(--gold2);font-size:.68rem;font-weight:700">▶ 하이라이트</span>':''} &nbsp;·&nbsp; <span style="color:rgba(251,113,133,.9);font-weight:600">─ ─ ${capLbl}</span> &nbsp;·&nbsp; <span style="color:var(--gold2);font-weight:600">— 가동률(%)</span>`;
+  }
+}
+
+procComboChart=new Chart(document.getElementById('cProcCombo26'),{
+  type:'bar',
+  data:buildProcComboData('press',0,11),
+  options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{labels:{color:'#475569',font:{size:11},boxWidth:14,padding:14}},
+      tooltip:{...TT,callbacks:{
+        label:c=>{if(c.dataset.label==='가동률(%)')return`  가동률: ${c.parsed.y}%`;if(c.dataset.label==='Max Capa')return`  Max Capa: ${c.parsed.y.toFixed(1)}M`;return`  ${c.dataset.label}: ${c.parsed.y.toFixed(1)}M`;},
+        afterBody:items=>{
+          const i=items[0].dataIndex;
+          const capD=filterProc==='all'?dCapa.max:(dCapaProc[filterProc]??dCapa.max);
+          const utilD=filterProc==='all'?utilRate:(utilRateProc[filterProc]??utilRate);
+          const prodMap={press:d26.press,vp:d26.vp,laser:d26.laser,assy:d26.assy};
+          const prod=filterProc==='all'
+            ?+(d26.press[i]+d26.vp[i]+d26.laser[i]+d26.assy[i]).toFixed(1)
+            :+(prodMap[filterProc]?.[i]??0).toFixed(1);
+          const v=utilD[i]; const cap=capD[i];
+          const pLabel=filterProc==='all'?'총 생산':{press:'Press',vp:'일관 포장',laser:'Laser',assy:'외주 포장'}[filterProc];
+          return[`─────────`,`${pLabel}: ${prod}M / Capa: ${cap}M  ${i<6?'(Actual)':'(Forecast)'}`,`가동률: ${v}%  ${v>=85?'⚠ Capa 주의':v>=75?'✓ 양호':'↓ 여유'}`];
+        }
+      }}},
+    scales:{
+      x:{stacked:true,grid:{display:false},border:{display:false},ticks:TC},
+      y:{stacked:true,position:'left',grid:GR,border:{display:false},ticks:{...TC,callback:v=>v+'M'},title:{display:true,text:'생산량 (M)',color:'#64748B',font:{size:10}}},
+      yR:{position:'right',min:0,max:120,grid:{
+        display:true,
+        color:ctx=>{
+          if(ctx.tick.value===85)return'rgba(245,158,11,.35)';
+          if(ctx.tick.value===95)return'rgba(239,68,68,.35)';
+          return'transparent';
+        },
+        lineWidth:ctx=>{
+          if(ctx.tick.value===85||ctx.tick.value===95)return 1.5;
+          return 1;
+        }
+      },border:{display:false},ticks:{...TC,callback:v=>{
+        if(v===85)return'85% ⚡';
+        if(v===95)return'95% 🔴';
+        return v+'%';
+      }},title:{display:true,text:'가동률 (%)',color:'#64748B',font:{size:10}}}
+    }}
+});
+updateCapaWarnings();
+
+/* ══ 2026 ① 시리즈별 콤보 차트 (시리즈 필터 연동) ══ */
+let comboChart, filterSeries='all', filterSeriesMoFrom=0, filterSeriesMoTo=11;
+
+/* ══ 시리즈별 연도별 비교 차트 데이터 빌더 ══ */
+function buildSeriesComboData(series, moFrom, moTo){
+  const isAll=series==='all';
+  const isFullRange=moFrom===0&&moTo===11;
+  const inRange=i=>i>=moFrom&&i<=moTo;
+  const inA=i=>isFullRange||inRange(i);
+  const segInRange=ctx=>inRange(ctx.p0DataIndex)||inRange(ctx.p1DataIndex);
+  const segDim=(ctx,bright,dim)=>isFullRange||segInRange(ctx)?bright:dim;
+  const segDash26=ctx=>ctx.p0DataIndex>=6?[6,3]:undefined;
+  const BW={barPercentage:.9,categoryPercentage:.65};
+
+  const sMap={
+    s:{label:'S 시리즈',data26:dS.s,data25:dS25.s,data24:dS24.s,r:14,g:165,b:233},
+    a:{label:'A 시리즈',data26:dS.a,data25:dS25.a,data24:dS24.a,r:245,g:158,b:11},
+    f:{label:'폴더블(F)',data26:dS.f,data25:dS25.f,data24:dS24.f,r:139,g:92,b:246},
+    etc:{label:'기타',data26:dS.etc,data25:dS25.etc,data24:dS24.etc,r:100,g:116,b:139}
+  };
+
+  // 선택 시리즈에 맞는 2024/2025 데이터
+  const get24=k=>isAll?tot24:sMap[k]?.data24??dS24[k]??tot24;
+  const get25=k=>isAll?tot25:sMap[k]?.data25??dS25[k]??tot25;
+
+  const bar24={
+    type:'bar',label:'2024',
+    data:isAll?tot24:sMap[series]?.data24??dS24[series]??tot24,
+    backgroundColor:MO.map((_,i)=>`rgba(15,23,42,${inA(i)?.11:.03})`),
+    borderColor:MO.map((_,i)=>`rgba(15,23,42,${inA(i)?.20:.05})`),
+    borderWidth:1,borderRadius:3,...BW,order:2
+  };
+
+  const bar25={
+    type:'bar',label:'2025',
+    data:isAll?tot25:sMap[series]?.data25??dS25[series]??tot25,
+    backgroundColor:MO.map((_,i)=>`rgba(56,189,248,${inA(i)?.6:.1})`),
+    borderColor:MO.map((_,i)=>`rgba(56,189,248,${inA(i)?.85:.12})`),
+    borderWidth:1,borderRadius:3,...BW,order:2
+  };
+
+  if(isAll){
+    const line26={
+      type:'line',label:'2026',data:tot26,
+      borderColor:'#10B981',borderWidth:2.8,tension:.4,
+      fill:true,backgroundColor:c=>aGrad(c,16,185,129),
+      pointRadius:MO.map((_,i)=>inA(i)?5.5:2),
+      pointBackgroundColor:MO.map((_,i)=>inA(i)?'#34D399':'rgba(16,185,129,.15)'),
+      pointHoverRadius:8,order:0,
+      segment:{borderDash:segDash26,borderColor:ctx=>segDim(ctx,'#10B981','rgba(16,185,129,.15)')}
+    };
+    return {labels:MO, datasets:[bar24, bar25, line26]};
+
+  } else {
+    const sm=sMap[series]??sMap.s;
+    const line26ser={
+      type:'line',label:`2026 · ${sm.label}`,data:sm.data26,
+      borderColor:`rgb(${sm.r},${sm.g},${sm.b})`,borderWidth:2.8,tension:.4,
+      fill:true,backgroundColor:c=>aGrad(c,sm.r,sm.g,sm.b),
+      pointRadius:MO.map((_,i)=>inA(i)?5.5:2),
+      pointBackgroundColor:MO.map((_,i)=>inA(i)?`rgb(${sm.r},${sm.g},${sm.b})`:`rgba(${sm.r},${sm.g},${sm.b},.15)`),
+      pointHoverRadius:8,order:0,
+      segment:{borderDash:segDash26,borderColor:ctx=>segDim(ctx,`rgb(${sm.r},${sm.g},${sm.b})`,`rgba(${sm.r},${sm.g},${sm.b},.15)`)}
+    };
+    return {labels:MO, datasets:[bar24, bar25, line26ser]};
+  }
+}
+
+function updateSeriesComboChart(){
+  comboChart.data=buildSeriesComboData(filterSeries,filterSeriesMoFrom,filterSeriesMoTo);
+  comboChart.update('active');
+  const el=document.getElementById('comboSub');
+  if(el){
+    const isFullRange=filterSeriesMoFrom===0&&filterSeriesMoTo===11;
+    const mLbl=isFullRange?'전체 12개월':`${MO[filterSeriesMoFrom]} ~ ${MO[filterSeriesMoTo]}`;
+    if(filterSeries==='all'){
+      el.innerHTML=`All 시리즈 · ${mLbl} &nbsp;·&nbsp; <span style="color:rgba(15,23,42,.40);font-weight:600">▐ 2024</span> &nbsp;·&nbsp; <span style="color:var(--sky2);font-weight:600">▐ 2025</span> &nbsp;·&nbsp; <span style="color:var(--em2);font-weight:600">━ 2026</span>`;
+    }else{
+      const sLbl={s:'S 시리즈',a:'A 시리즈',f:'폴더블(F)',etc:'기타'}[filterSeries];
+      const sColor={s:'#0e6fa3',a:'#9a5c00',f:'#5a28a8',etc:'#556070'}[filterSeries];
+      el.innerHTML=`${sLbl} · ${mLbl} <span style="color:var(--gold2);font-size:.68rem;font-weight:700">▶ 하이라이트</span> &nbsp;·&nbsp; <span style="color:rgba(15,23,42,.40);font-weight:600">▐ 2024</span> &nbsp;·&nbsp; <span style="color:var(--sky2);font-weight:600">▐ 2025</span> &nbsp;·&nbsp; <span style="color:${sColor};font-weight:600">━ 2026 ${sLbl}</span>`;
+    }
+  }
+}
+
+function buildComboData(proc, moFrom, moTo){
+  const isFullRange = moFrom===0 && moTo===11;
+
+  // bar alpha: 범위 내 = 밝게, 범위 밖 = dim
+  const inRange = i => i>=moFrom && i<=moTo;
+  const bA = (i, hiB, loB) => {
+    const base = i < 6 ? hiB : loB;
+    if(isFullRange) return base;
+    return inRange(i) ? Math.min(1, hiB*1.06) : base*0.10;
+  };
+
+  // segment helpers
+  const segDash = ctx => ctx.p0DataIndex>=6 ? [6,3] : undefined;
+  // 세그먼트가 범위에 걸치는지 (한쪽 끝이라도 범위 내이면 밝게)
+  const segInRange = ctx => inRange(ctx.p0DataIndex)||inRange(ctx.p1DataIndex);
+  const segDim = (ctx, bright, dim) => isFullRange||segInRange(ctx) ? bright : dim;
+
+  const capaLine={
+    type:'line', label:'Max Capa', data:dCapa.max, yAxisID:'y',
+    borderColor:'rgba(251,113,133,.85)', borderWidth:2.2, borderDash:[7,4], tension:.3,
+    pointRadius: MO.map((_,i)=> !isFullRange&&inRange(i) ? 5.5 : 3.5),
+    pointBackgroundColor: MO.map((_,i)=> isFullRange||inRange(i) ? 'rgba(251,113,133,.9)' : 'rgba(251,113,133,.18)'),
+    fill:false, order:0,
+    segment:{ borderColor: ctx=>segDim(ctx,'rgba(251,113,133,.85)','rgba(251,113,133,.14)') }
+  };
+  const utilPt=i=>{const v=utilRate[i];return v>=95?'#FF3B30':v>=85?'#FF6B35':v>=75?'#FF9500':'#34D399';};
+  const utilLine={
+    type:'line', label:'가동률(%)', data:utilRate, yAxisID:'yR',
+    borderColor:'#FF9500', borderWidth:3.5, tension:.35, fill:false,
+    pointRadius: MO.map((_,i)=>{const v=utilRate[i];return isFullRange||inRange(i)?(v>=95?10:v>=85?7.5:5):2;}),
+    pointBackgroundColor: MO.map((_,i)=> isFullRange||inRange(i) ? utilPt(i) : 'rgba(255,149,0,.12)'),
+    pointBorderColor: MO.map((_,i)=>{const v=utilRate[i];return v>=85?'rgba(15,23,42,.6)':'transparent';}),
+    pointBorderWidth: MO.map((_,i)=>{const v=utilRate[i];return v>=85?1.5:0;}),
+    order:0,
+    segment:{ borderDash:segDash, borderColor: ctx=>segDim(ctx,undefined,'rgba(255,149,0,.12)') }
+  };
+
+  const bwC={barPercentage:.48,categoryPercentage:.85};
+  if(proc==='all'){
+    return {labels:MO, datasets:[
+      {type:'bar',label:'S 시리즈',data:dS.s,stack:'p',yAxisID:'y',
+        backgroundColor:MO.map((_,i)=>`rgba(14,165,233,${bA(i,.85,.38)})`),borderRadius:0,...bwC},
+      {type:'bar',label:'A 시리즈',data:dS.a,stack:'p',yAxisID:'y',
+        backgroundColor:MO.map((_,i)=>`rgba(245,158,11,${bA(i,.85,.38)})`),borderRadius:0,...bwC},
+      {type:'bar',label:'폴더블(F)',data:dS.f,stack:'p',yAxisID:'y',
+        backgroundColor:MO.map((_,i)=>`rgba(139,92,246,${bA(i,.85,.38)})`),borderRadius:0,...bwC},
+      {type:'bar',label:'기타',data:dS.etc,stack:'p',yAxisID:'y',
+        backgroundColor:MO.map((_,i)=>`rgba(100,116,139,${bA(i,.65,.30)})`),borderRadius:2,...bwC},
+      capaLine, utilLine
+    ]};
+  } else {
+    const pDefs=[
+      {key:'press',data:d26.press,label:'Press',   r:14, g:165,b:233},
+      {key:'vp',   data:d26.vp,   label:'일관 포장', r:16, g:185,b:129},
+      {key:'laser',data:d26.laser,label:'Laser',   r:139,g:92, b:246},
+      {key:'assy', data:d26.assy, label:'외주 포장', r:245,g:158,b:11}
+    ];
+    const barDs=pDefs.map(pd=>{
+      const isSel=pd.key===proc;
+      const hiB=isSel?.87:.10;
+      const loB=isSel?.44:.06;
+      return{
+        type:'bar', label:pd.label, data:pd.data, stack:'p', yAxisID:'y',
+        backgroundColor: MO.map((_,i)=>`rgba(${pd.r},${pd.g},${pd.b},${bA(i,hiB,loB)})`),
+        borderRadius: isSel?3:0, barPercentage:.48, categoryPercentage:.85
+      };
+    });
+    return {labels:MO, datasets:[...barDs, capaLine, utilLine]};
+  }
+}
+
+function updateComboChart(){
+  comboChart.data=buildComboData(filterProc,filterMoFrom,filterMoTo);
+  comboChart.update('active');
+  const el=document.getElementById('comboSub');
+  if(el){
+    const pLbl={all:'시리즈별 생산량',press:'Press',assy:'외주 포장',vp:'일관 포장',laser:'Laser'}[filterProc];
+    const isFullRange=filterMoFrom===0&&filterMoTo===11;
+    const mLbl=isFullRange?'전체 12개월':`${MO[filterMoFrom]} ~ ${MO[filterMoTo]}`;
+    const hi=!isFullRange||filterProc!=='all';
+    el.innerHTML=`${pLbl} · ${mLbl}${hi?` <span style="color:var(--gold2);font-size:.68rem;font-weight:700">▶ 하이라이트</span>`:''} &nbsp;·&nbsp; <span style="color:rgba(251,113,133,.9);font-weight:600">─ ─ Max Capa</span> &nbsp;·&nbsp; <span style="color:var(--gold2);font-weight:600">— 가동률(%)</span>`;
+  }
+}
+
+comboChart=new Chart(document.getElementById('cCombo26'),{
+  type:'bar',
+  data:buildSeriesComboData('all',0,11),
+  options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{labels:{color:'#475569',font:{size:11},boxWidth:14,padding:14}},
+      tooltip:{...TT,callbacks:{
+        label:c=>`  ${c.dataset.label}: ${c.parsed.y.toFixed(1)}M`,
+        afterBody:items=>{
+          const i=items[0].dataIndex;
+          const yoy24=tot24[i]?+((tot25[i]/tot24[i]-1)*100).toFixed(1):0;
+          const yoy25=tot25[i]?+((tot26[i]/tot25[i]-1)*100).toFixed(1):0;
+          return[`─────────`,`'24→'25: ${yoy24>=0?'+':''}${yoy24}%  |  '25→'26: ${yoy25>=0?'+':''}${yoy25}%  ${i<6?'(Actual)':'(Forecast)'}`];
+        }
+      }}},
+    scales:{
+      x:{grid:{display:false},border:{display:false},ticks:TC},
+      y:{grid:GR,border:{display:false},ticks:{...TC,callback:v=>v+'M'},title:{display:true,text:'생산량 (M)',color:'#64748B',font:{size:10}}}
+    }}
+});
+
+// 시리즈 드롭다운 이벤트
+document.getElementById('seriesSelect').addEventListener('change',e=>{
+  filterSeries=e.target.value;
+  updateSeriesComboChart();
+});
+document.getElementById('seriesMoFromSelect').addEventListener('change',e=>{
+  filterSeriesMoFrom=parseInt(e.target.value);
+  if(filterSeriesMoFrom>filterSeriesMoTo){
+    filterSeriesMoTo=filterSeriesMoFrom;
+    document.getElementById('seriesMoToSelect').value=filterSeriesMoFrom;
+  }
+  updateSeriesComboChart();
+});
+document.getElementById('seriesMoToSelect').addEventListener('change',e=>{
+  filterSeriesMoTo=parseInt(e.target.value);
+  if(filterSeriesMoTo<filterSeriesMoFrom){
+    filterSeriesMoFrom=filterSeriesMoTo;
+    document.getElementById('seriesMoFromSelect').value=filterSeriesMoTo;
+  }
+  updateSeriesComboChart();
+});
+
+// 공정 드롭다운 이벤트 → 공정별 콤보 차트 실시간 업데이트
+document.getElementById('procSelect').addEventListener('change',e=>{
+  filterProc=e.target.value;
+  updateProcComboChart();
+});
+
+/* ── 섹션 헤더 드롭다운 → KPI 카드만 업데이트 (차트 미연동) ── */
+function updateSectionKPI(proc){
+  const Sm=a=>+a.reduce((x,y)=>x+y,0).toFixed(1);
+  const pNames={all:'전망 생산량 합계',press:'Press 생산량',vp:'일관 포장 생산량',assy:'외주 포장 생산량',laser:'Laser 생산량'};
+
+  let prod, capa, utilArr;
+  if(proc==='all'){
+    prod=Sm(moSerTot); capa=Sm(dCapa.max); utilArr=utilRate;
+  }else{
+    const pData={press:d26.press,vp:d26.vp,laser:d26.laser,assy:d26.assy};
+    prod=Sm(pData[proc]); capa=Sm(dCapaProc[proc]); utilArr=utilRateProc[proc];
+  }
+
+  const avgUtil=+(utilArr.reduce((a,b)=>a+b,0)/12).toFixed(1);
+  const peakUtil=+Math.max(...utilArr).toFixed(1);
+  const peakIdx=utilArr.indexOf(Math.max(...utilArr));
+  const peakMo=MO[peakIdx];
+  const remain=+(capa-prod).toFixed(1);
+  const freeRate=+((1-prod/capa)*100).toFixed(1);
+
+  // KPI 카드 값 업데이트
+  document.getElementById('kpi-prod-tag').textContent=pNames[proc]??pNames.all;
+  document.getElementById('kpi-prod-val').textContent=prod.toFixed(1);
+  document.getElementById('kpi-prod-badge').textContent=proc==='all'?(()=>{const y=(prod/Sm(tot25)-1)*100;return (y>=0?'▲ +':'▼ ')+y.toFixed(1)+'% YoY';})():`전체의 ${((prod/Sm(moSerTot))*100).toFixed(1)}%`;
+
+  document.getElementById('kpi-capa-tag').textContent=proc==='all'?'최대 생산 CAPA':`${pNames[proc]??'공정'} CAPA`;
+  document.getElementById('kpi-capa-val').textContent=capa.toFixed(1);
+  document.getElementById('kpi-capa-badge').textContent=`잔여 Capa: ${remain}M`;
+
+  document.getElementById('kpi-util-val').textContent=avgUtil.toFixed(1);
+  document.getElementById('kpi-util-badge').textContent=`여유 가동 비율: ${freeRate.toFixed(1)}%`;
+
+  document.getElementById('kpi-peak-tag').textContent=`PEAK 월 가동률 (${peakMo})`;
+  document.getElementById('kpi-peak-val').textContent=peakUtil.toFixed(1);
+  document.getElementById('kpi-peak-badge').textContent=`⚠ Peak 가동월: ${peakMo} (${peakUtil}%)`;
+}
+
+document.getElementById('sectionProcFilter').addEventListener('change',e=>{
+  updateSectionKPI(e.target.value);
+});
+// 초기 KPI: press 기준으로 표시
+updateSectionKPI('all');
+document.getElementById('moFromSelect').addEventListener('change',e=>{
+  filterMoFrom=parseInt(e.target.value);
+  if(filterMoFrom>filterMoTo){
+    filterMoTo=filterMoFrom;
+    document.getElementById('moToSelect').value=filterMoFrom;
+  }
+  updateProcComboChart();
+});
+document.getElementById('moToSelect').addEventListener('change',e=>{
+  filterMoTo=parseInt(e.target.value);
+  if(filterMoTo<filterMoFrom){
+    filterMoFrom=filterMoTo;
+    document.getElementById('moFromSelect').value=filterMoTo;
+  }
+  updateProcComboChart();
+});
+
+/* ══ 2026 ② 공정 라인 ══ */
+(()=>{
+  new Chart(document.getElementById('cProc26'),{type:'line',data:{labels:MO,datasets:[
+    {label:'Press',data:d26.press,borderColor:'#0EA5E9',borderWidth:2.5,tension:.4,fill:true,backgroundColor:c=>aGrad(c,14,165,233),pointRadius:MO.map((_,i)=>i<6?4:3),pointBackgroundColor:'#0EA5E9',segment:{borderDash:ctx=>ctx.p0DataIndex>=6?[6,3]:undefined}},
+    {label:'일관 포장',data:d26.vp,borderColor:'#10B981',borderWidth:2.5,tension:.4,fill:true,backgroundColor:c=>aGrad(c,16,185,129),pointRadius:MO.map((_,i)=>i<6?4:3),pointBackgroundColor:'#10B981',segment:{borderDash:ctx=>ctx.p0DataIndex>=6?[6,3]:undefined}},
+    {label:'Laser',data:d26.laser,borderColor:'#8B5CF6',borderWidth:2.5,tension:.4,fill:true,backgroundColor:c=>aGrad(c,139,92,246),pointRadius:MO.map((_,i)=>i<6?4:3),pointBackgroundColor:'#8B5CF6',segment:{borderDash:ctx=>ctx.p0DataIndex>=6?[6,3]:undefined}},
+    {label:'외주 포장',data:d26.assy,borderColor:'#F59E0B',borderWidth:2.5,tension:.4,fill:true,backgroundColor:c=>aGrad(c,245,158,11),pointRadius:MO.map((_,i)=>i<6?4:3),pointBackgroundColor:'#F59E0B',segment:{borderDash:ctx=>ctx.p0DataIndex>=6?[6,3]:undefined}}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:LC,tooltip:{...TT,callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y.toFixed(2)}M`,afterBody:items=>`  ${items[0].dataIndex<6?'◆ ERP 확정 실적':'◇ 경영계획 Forecast'}`}}},scales:{x:{grid:GR,border:{display:false},ticks:TC},y:{grid:GR,border:{display:false},ticks:{...TC,callback:v=>v+'M'}}}}});
+})();
+
+/* ══ 2026 ③ 공정 도넛 ══ */
+makeDonut('cProc26Donut',d26);
+
+/* ══ 2026 proc 스파크라인 ══ */
+(()=>{
+  const sparkOpts={
+    responsive:true,maintainAspectRatio:false,animation:{duration:600},
+    plugins:{legend:{display:false},tooltip:{enabled:false}},
+    scales:{x:{display:false},y:{display:false}}
+  };
+  const mkSpark=(id,data,r,g,b)=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    new Chart(el,{type:'line',data:{labels:MO,datasets:[{
+      data:data,
+      borderColor:`rgba(${r},${g},${b},.85)`,
+      borderWidth:1.8,tension:.45,fill:true,
+      backgroundColor:c=>{
+        const ch=c.chart,area=ch.chartArea;
+        if(!area)return'transparent';
+        const gr=ch.ctx.createLinearGradient(0,area.top,0,area.bottom);
+        gr.addColorStop(0,`rgba(${r},${g},${b},.18)`);
+        gr.addColorStop(1,`rgba(${r},${g},${b},.01)`);
+        return gr;
+      },
+      pointRadius:0,pointHoverRadius:3,
+      pointHoverBackgroundColor:`rgba(${r},${g},${b},.9)`
+    }]},options:sparkOpts});
+  };
+  mkSpark('spark-press',d26.press, 14,165,233);
+  mkSpark('spark-assy', d26.assy,  245,158,11);
+  mkSpark('spark-vp',   d26.vp,   16,185,129);
+  mkSpark('spark-laser',d26.laser,139,92,246);
+})();
+
+/* ══ 2026 ④ 시리즈 도넛 ══ */
+(()=>{
+  const vals=[S(dS.s),S(dS.a),S(dS.f),S(dS.etc)],tot=S(vals);
+  new Chart(document.getElementById('cSer26Donut'),{type:'doughnut',data:{labels:['S 시리즈','A 시리즈','폴더블(F)','기타'],datasets:[{data:vals,backgroundColor:['rgba(14,165,233,.85)','rgba(245,158,11,.85)','rgba(139,92,246,.85)','rgba(100,116,139,.72)'],borderColor:['#0EA5E9','#F59E0B','#8B5CF6','#64748B'],borderWidth:1.5,borderRadius:4,hoverBorderWidth:2.5}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{...LC,position:'bottom'},tooltip:{...TT,callbacks:{label:c=>`${c.label}: ${c.parsed.toFixed(1)}M (${(c.parsed/tot*100).toFixed(1)}%)`}}}}});
+})();
+
+/* ══ 2026 ⑤ 시리즈 라인 ══ */
+(()=>{
+  new Chart(document.getElementById('cSer26Line'),{type:'line',data:{labels:MO,datasets:[
+    {label:'S 시리즈',data:dS.s,borderColor:'#0EA5E9',borderWidth:2.5,tension:.4,fill:true,backgroundColor:c=>aGrad(c,14,165,233),pointRadius:MO.map((_,i)=>i<6?5:3),pointBackgroundColor:'#38BDF8',segment:{borderDash:ctx=>ctx.p0DataIndex>=6?[6,3]:undefined}},
+    {label:'A 시리즈',data:dS.a,borderColor:'#F59E0B',borderWidth:2.5,tension:.4,fill:true,backgroundColor:c=>aGrad(c,245,158,11),pointRadius:MO.map((_,i)=>i<6?5:3),pointBackgroundColor:'#FCD34D',segment:{borderDash:ctx=>ctx.p0DataIndex>=6?[6,3]:undefined}},
+    {label:'기타',data:dS.etc,borderColor:'#64748B',borderWidth:1.8,tension:.4,fill:true,backgroundColor:c=>aGrad(c,100,116,139),pointRadius:MO.map((_,i)=>i<6?4:2),pointBackgroundColor:'#94A3B8',segment:{borderDash:ctx=>ctx.p0DataIndex>=6?[6,3]:undefined}},
+    {label:'폴더블(F)',data:dS.f,borderColor:'#8B5CF6',borderWidth:2.5,tension:.4,fill:true,backgroundColor:c=>aGrad(c,139,92,246),pointRadius:MO.map((_,i)=>i<6?5:3),pointBackgroundColor:'#C4B5FD',segment:{borderDash:ctx=>ctx.p0DataIndex>=6?[6,3]:undefined}}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:LC,tooltip:{...TT,callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y.toFixed(1)}M`,afterBody:items=>{const i=items[0].dataIndex;return`  ${i<6?'◆ ERP 확정 실적':'◇ 경영계획 Forecast'} · 합계 ${moSerTot[i]}M`;}}}},scales:{x:{grid:GR,border:{display:false},ticks:TC},y:{grid:GR,border:{display:false},ticks:{...TC,callback:v=>v+'M'}}}}});
+})();
+
+/* ══ 2026 ⑥ 통합 테이블 ══ */
+(()=>{
+  const ac=i=>i<6?'style="color:var(--em2)"':'';
+  const grp=(text,color)=>`<tr class="tbl-grp"><td colspan="14" style="color:${color}!important">${text}</td></tr>`;
+  const d26tot=MO.map((_,i)=>+(d26.press[i]+d26.assy[i]+d26.vp[i]+d26.laser[i]).toFixed(1));
+  const uColor=v=>v>=85?'var(--red2)':v>=75?'var(--gold2)':'var(--em2)';
+  let html='';
+  html+=grp('━ 공정별 (경영계획 기준)','#1878a8');
+  [{n:'Press Charge',cls:'tp',lbl:'PRESS',d:d26.press},{n:'일관 포장',cls:'tv',lbl:'일관',d:d26.vp},{n:'Laser 4H',cls:'tl',lbl:'LASER',d:d26.laser},{n:'TOMT',cls:'ta',lbl:'외주',d:d26.assy.map(v=>+(v*.35).toFixed(2))},{n:'혜윰',cls:'ta',lbl:'외주',d:d26.assy.map(v=>+(v*.65).toFixed(2))}].forEach(r=>{const sm=r.d.reduce((a,b)=>a+b,0);html+=`<tr><td>${r.n}<span class="tag ${r.cls}">${r.lbl}</span></td>${r.d.map((v,i)=>`<td ${ac(i)}>${v.toFixed(2)}</td>`).join('')}<td style="color:var(--t1);font-weight:700">${sm.toFixed(2)}</td></tr>`;});
+  html+=`<tr style="background:rgba(15,23,42,.04)"><td style="font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:700;color:var(--t2)">공정 소계</td>${d26tot.map((v,i)=>`<td ${ac(i)} style="${i<6?'color:var(--em2)':''}font-weight:600">${v}</td>`).join('')}<td style="color:var(--em2);font-weight:700">${d26tot.reduce((a,b)=>a+b,0).toFixed(1)}</td></tr>`;
+  html+=grp('━ Capa 검토','#c05060');
+  html+=`<tr><td style="color:var(--t2)">Max Capa<span class="tag" style="background:rgba(200,80,80,.12);color:#c05060">CAPA</span></td>${dCapa.max.map(v=>`<td style="color:var(--t3)">${v.toFixed(1)}</td>`).join('')}<td style="color:var(--t3);font-weight:700">${S(dCapa.max).toFixed(1)}</td></tr>`;
+  html+=`<tr><td>가동률<span class="tag" style="background:rgba(160,90,0,.14);color:#8a5000">UTIL</span></td>${utilRate.map(v=>`<td style="color:${uColor(v)};font-weight:${v>=85?700:400}">${v.toFixed(1)}%</td>`).join('')}<td style="color:var(--gold2);font-weight:700">${(utilRate.reduce((a,b)=>a+b,0)/12).toFixed(1)}%</td></tr>`;
+  html+=grp('━ 시리즈별 (ERP 확정 실적 기반)','#6030b0');
+  [{n:'S 시리즈',cls:'ts',lbl:'SM-S',d:dS.s},{n:'A 시리즈',cls:'ta',lbl:'SM-A',d:dS.a},{n:'폴더블(F)',cls:'tf',lbl:'SM-F',d:dS.f},{n:'기타',cls:'te',lbl:'ETC',d:dS.etc}].forEach(r=>{const sm=r.d.reduce((a,b)=>a+b,0);html+=`<tr><td>${r.n}<span class="tag ${r.cls}">${r.lbl}</span></td>${r.d.map((v,i)=>`<td ${ac(i)}>${v.toFixed(1)}</td>`).join('')}<td style="color:var(--t1);font-weight:700">${sm.toFixed(1)}</td></tr>`;});
+  html+=`<tr style="background:rgba(15,23,42,.04)"><td style="font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:700;color:var(--t2)">시리즈 합계</td>${moSerTot.map((v,i)=>`<td ${ac(i)} style="${i<6?'color:var(--em2)':''}font-weight:600">${v}</td>`).join('')}<td style="color:var(--em2);font-weight:700">${S(moSerTot).toFixed(1)}</td></tr>`;
+  document.getElementById('tbodyCombined').innerHTML=html;
+})();
+
+/* ══ 2025 / 2024 차트 ══ */
+makeLine('c25line',d25);makeBar('c25bar',d25);makeDonut('c25donut',d25);
+makeLine('c24line',d24);makeBar('c24bar',d24);makeDonut('c24donut',d24);
+
+/* ══ 25vs26 전년 대비 비교 ══ */
+(()=>{
+  const Sm=a=>a.reduce((x,y)=>x+y,0);
+  const tot26yr=+(Sm(d26.press)+Sm(d26.vp)+Sm(d26.assy)+Sm(d26.laser)).toFixed(1);
+  const tot25yr=+(Sm(d25.press)+Sm(d25.vp)+Sm(d25.assy)+Sm(d25.laser)).toFixed(1);
+  const diff=+(tot26yr-tot25yr).toFixed(1);
+  const pct=+((tot26yr/tot25yr*100)).toFixed(1);
+  document.getElementById('kpi-yoy-26tot').textContent=tot26yr.toFixed(1);
+  document.getElementById('kpi-yoy-25tot').textContent=tot25yr.toFixed(1);
+  document.getElementById('kpi-yoy-diff').textContent=(diff>=0?'+':'')+diff.toFixed(1);
+  document.getElementById('kpi-yoy-pct').textContent=pct.toFixed(1);
+})();
+/* 공정별 */
+makeYoY('yPress', d26.press, d25.press, 14,165,233);
+makeYoY('yVP',    d26.vp,    d25.vp,    16,185,129);
+makeYoY('yAssy',  d26.assy,  d25.assy,  245,158,11);
+makeYoY('yLaser', d26.laser, d25.laser, 139,92,246);
+makeRatioLine('yProcRatio',[
+  {label:'Press',   d26a:d26.press, d25a:d25.press, r:14, g:165,b:233},
+  {label:'일관 포장', d26a:d26.vp,    d25a:d25.vp,    r:16, g:185,b:129},
+  {label:'외주 포장', d26a:d26.assy,  d25a:d25.assy,  r:245,g:158,b:11},
+  {label:'Laser',   d26a:d26.laser, d25a:d25.laser, r:139,g:92, b:246}
+]);
+/* 시리즈별 */
+makeYoY('ySerS',   dS.s,   dS25.s,   14,165,233);
+makeYoY('ySerA',   dS.a,   dS25.a,   245,158,11);
+makeYoY('ySerF',   dS.f,   dS25.f,   139,92,246);
+makeYoY('ySerEtc', dS.etc, dS25.etc, 100,116,139);
+makeRatioLine('ySerRatio',[
+  {label:'S 시리즈', d26a:dS.s,   d25a:dS25.s,   r:14, g:165,b:233},
+  {label:'A 시리즈', d26a:dS.a,   d25a:dS25.a,   r:245,g:158,b:11},
+  {label:'폴더블(F)',d26a:dS.f,   d25a:dS25.f,   r:139,g:92, b:246},
+  {label:'기타',    d26a:dS.etc, d25a:dS25.etc, r:100,g:116,b:139}
+]);
+
+/* ══ TABLE RENDER (2025 / 2024) ══ */
+const ROWS=[{n:'Press Charge',cls:'tp',lbl:'PRESS',fn:d=>[...d.press]},{n:'일관 포장',cls:'tv',lbl:'일관',fn:d=>[...d.vp]},{n:'Laser 4H',cls:'tl',lbl:'LASER',fn:d=>[...d.laser]},{n:'TOMT',cls:'ta',lbl:'외주',fn:d=>d.assy.map(v=>+(v*.4).toFixed(2))},{n:'혜윰',cls:'ta',lbl:'외주',fn:d=>d.assy.map(v=>+(v*.6).toFixed(2))}];
+const renderTable=(bid,fid,data)=>{const rs=ROWS.map(r=>({...r,vals:r.fn(data)}));document.getElementById(bid).innerHTML=rs.map(r=>{const s=r.vals.reduce((a,b)=>a+b,0);return`<tr><td>${r.n}<span class="tag ${r.cls}">${r.lbl}</span></td>${r.vals.map(v=>`<td>${v.toFixed(2)}</td>`).join('')}<td style="color:var(--t1);font-weight:700">${s.toFixed(2)}</td></tr>`;}).join('');const ta=MO.map((_,i)=>+(data.assy[i]+data.press[i]+data.vp[i]+data.laser[i]).toFixed(2));const g=ta.reduce((a,b)=>a+b,0);document.getElementById(fid).innerHTML=`<tr><td>월별 합계</td>${ta.map(v=>`<td>${v.toFixed(2)}</td>`).join('')}<td style="color:var(--em2)">${g.toFixed(2)}</td></tr>`;};
+renderTable('tbody25','tfoot25',d25);
+renderTable('tbody24','tfoot24',d24);
+
+/* ══ COUNT-UP ══ */
+function countUp(el,target,dec,dur){const t0=performance.now();(function step(now){const p=Math.min((now-t0)/dur,1),ease=1-Math.pow(1-p,3),v=target*ease;el.textContent=dec>0?v.toFixed(dec):Math.round(v).toLocaleString();if(p<1)requestAnimationFrame(step);else el.textContent=dec>0?target.toFixed(dec):target.toLocaleString();})(t0);}
+
+/* ══ COUNT-UP 트리거 (뷰 전환 시 실행) ══ */
+function triggerCountUp(viewEl){
+  viewEl.querySelectorAll('[data-count]').forEach(span=>{
+    if(span.dataset.animated)return;
+    span.dataset.animated='1';
+    countUp(span,parseFloat(span.dataset.count),parseInt(span.dataset.dec||0),1400);
+  });
+  viewEl.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible'));
+}
+
+/* ══ VIEW SWITCHER ══ */
+const views={
+  'main':'view-main',
+  's2026':'view-s2026',
+  's2025':'view-s2025',
+  's2024':'view-s2024',
+  'sYoY':'view-sYoY'
+};
+let currentView='s2026';
+let chartInit={};
+
+function switchView(id){
+  if(id===currentView) return;
+
+  // 현재 뷰 숨김
+  const prevEl=document.getElementById(views[currentView]);
+  if(prevEl){prevEl.classList.remove('active');}
+
+  // 새 뷰 표시
+  const nextEl=document.getElementById(views[id]);
+  if(!nextEl) return;
+
+  currentView=id;
+  window.scrollTo(0,0);
+
+  // 전환 애니메이션
+  nextEl.classList.add('entering');
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      nextEl.classList.remove('entering');
+      nextEl.classList.add('active');
+      triggerCountUp(nextEl);
+    });
+  });
+
+  // nav 활성 상태
+  document.querySelectorAll('.np').forEach(p=>{
+    p.classList.toggle('on', p.dataset.view===id);
+  });
+}
+
+// nav 링크 클릭 이벤트
+document.querySelectorAll('.np').forEach(p=>{
+  p.addEventListener('click',e=>{
+    e.preventDefault();
+    const vid=p.dataset.view;
+    if(vid) switchView(vid);
+  });
+});
+
+// 초기 뷰 카운트업
+triggerCountUp(document.getElementById('view-s2026'));
+
+/* ══ 인쇄 시 차트 리사이즈 (Ctrl+P 포함) ══ */
+const resizeAllCharts=()=>document.querySelectorAll('canvas').forEach(cv=>{
+  const ch=Chart.getChart(cv); if(!ch) return;
+  ch.resize();
+  ch.update('none'); // 애니메이션 없이 즉시 완전 재렌더 (마지막 차트가 인쇄 시점에 덜 그려지는 문제 방지)
+});
+window.addEventListener('beforeprint',()=>{
+  document.body.classList.add('printing');
+  document.querySelectorAll('.view').forEach(v=>v.classList.add('active'));
+  resizeAllCharts();
+});
+window.addEventListener('afterprint',()=>{
+  document.body.classList.remove('printing');
+  document.querySelectorAll('.view').forEach(v=>{if(v.id!=='view-'+currentView)v.classList.remove('active');});
+  resizeAllCharts();
+});
+// beforeprint가 늦게 발화하는 브라우저/프린터 드라이버 대비 — matchMedia로 한 번 더 보강
+if(window.matchMedia){
+  window.matchMedia('print').addEventListener('change',mql=>{
+    if(mql.matches) resizeAllCharts();
+  });
+}
+
+/* ══ PDF 전체 출력 ══ */
+function exportPDF(){
+  const btn=document.getElementById('pdfBtn');
+  if(btn){btn.disabled=true;btn.textContent='준비 중…';}
+
+  // 1) 모든 뷰 펼치기 + reveal 애니메이션 강제 표시
+  document.body.classList.add('printing');
+  document.querySelectorAll('.view').forEach(v=>{v.classList.add('active');triggerCountUp(v);});
+
+  // 2) 레이아웃 반영 → 리사이즈(2회, 안정성 확보) → 인쇄
+  requestAnimationFrame(()=>{requestAnimationFrame(()=>{
+    resizeAllCharts();
+    setTimeout(()=>{
+      resizeAllCharts();
+      setTimeout(()=>{
+        window.print();
+        // 3) 인쇄 대화상자 종료 후 원상 복구
+        document.body.classList.remove('printing');
+        document.querySelectorAll('.view').forEach(v=>{
+          if(v.id!==('view-'+currentView)) v.classList.remove('active');
+        });
+        resizeAllCharts();
+        if(btn){btn.disabled=false;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 1v8m0 0L5 6m3 3l3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> PDF 저장';}
+      },300);
+    },400);
+  });});
+}
+</script>
+</body></html>
