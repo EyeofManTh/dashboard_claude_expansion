@@ -865,43 +865,15 @@ body.printing .cb-combo{height:195px!important}
 <div class="view active" id="view-s2026">
 <section id="s2026" class="section">
   <span class="sec-label sl-mix">2026 전망 &amp; Capa 검토</span>
-  <div style="display:flex;align-items:center;flex-wrap:wrap;gap:.9rem;margin-bottom:.3rem">
-    <h3 class="sec-title" style="margin-bottom:0">2026년 경영계획 Forecast &amp; 생산 Capa 통합 분석</h3>
-    <div class="dash-select-wrap" style="flex-shrink:0">
-      <select id="sectionProcFilter" class="dash-select" style="min-width:148px;font-size:.88rem;padding:.48rem 2.2rem .48rem 1rem">
-        <option value="all" selected>All 공정</option>
-        <option value="press">Press</option>
-        <option value="vp">일관 포장</option>
-        <option value="assy">외주 포장</option>
-        <option value="laser">Laser</option>
-
-      </select>
-    </div>
-  </div>
+  <h3 class="sec-title">2026년 경영계획 Forecast &amp; 생산 Capa 통합 분석</h3>
   <p class="sec-sub">공정별 · 시리즈별 전망 &nbsp;·&nbsp; <span style="color:var(--em2);font-weight:600">1~6월 ERP 확정 실적</span> &nbsp;·&nbsp; <span style="color:var(--gold2);font-weight:600">7~12월 경영계획 Forecast</span> &nbsp;·&nbsp; 연간 전망 1,277.4M &nbsp;·&nbsp; Max Capa 1,811.0M</p>
 
-  <!-- KPI 요약 행 -->
-  <div class="kpi-row2 reveal">
-    <div class="kpi2 kpi2-1">
-      <div class="kpi2-tag" id="kpi-prod-tag">전망 생산량 합계</div>
-      <div class="kpi2-num"><span id="kpi-prod-val">1,277.4</span><span class="kpi2-unit">M</span></div>
-      <span class="kpi2-badge kpi2-down" id="kpi-prod-badge">▼ -7.8% YoY</span>
-    </div>
-    <div class="kpi2 kpi2-2">
-      <div class="kpi2-tag" id="kpi-capa-tag">최대 생산 CAPA</div>
-      <div class="kpi2-num"><span id="kpi-capa-val">1,811.0</span><span class="kpi2-unit">M</span></div>
-      <span class="kpi2-badge kpi2-neutral" id="kpi-capa-badge">잔여 Capa: 533.2M EA</span>
-    </div>
-    <div class="kpi2 kpi2-3">
-      <div class="kpi2-tag">평균 가동률</div>
-      <div class="kpi2-num"><span id="kpi-util-val">70.6</span><span class="kpi2-unit">%</span></div>
-      <span class="kpi2-badge kpi2-neutral" id="kpi-util-badge">여유 가동 비율: 29.4%</span>
-    </div>
-    <div class="kpi2 kpi2-4">
-      <div class="kpi2-tag" id="kpi-peak-tag">PEAK 월 가동률 (6월)</div>
-      <div class="kpi2-num"><span id="kpi-peak-val">90.5</span><span class="kpi2-unit">%</span></div>
-      <span class="kpi2-badge kpi2-warn" id="kpi-peak-badge">⚠ Peak 가동월: 6월 (90.5%)</span>
-    </div>
+  <!-- KPI 요약 행 — 공정별 연간 전망 수량 -->
+  <div class="kpi-row reveal">
+    <div class="kpi kpi-sky"><div class="kpi-tag">Press 연간 전망</div><div class="kpi-main"><span data-count="704.9" data-dec="1">704.9</span><span class="kpi-unit">M</span></div><span class="kpi-badge kb-neutral">1~6월 확정 + 7~12월 FC</span></div>
+    <div class="kpi kpi-em"><div class="kpi-tag">일관 포장 연간 전망</div><div class="kpi-main"><span data-count="183.7" data-dec="1">183.7</span><span class="kpi-unit">M</span></div><span class="kpi-badge kb-neutral">1~6월 확정 + 7~12월 FC</span></div>
+    <div class="kpi kpi-gold"><div class="kpi-tag">외주 포장 연간 전망</div><div class="kpi-main"><span data-count="280.2" data-dec="1">280.2</span><span class="kpi-unit">M</span></div><span class="kpi-badge kb-neutral">1~6월 확정 + 7~12월 FC</span></div>
+    <div class="kpi kpi-pu"><div class="kpi-tag">Laser 연간 전망</div><div class="kpi-main"><span data-count="108.6" data-dec="1">108.6</span><span class="kpi-unit">M</span></div><span class="kpi-badge kb-neutral">1~6월 확정 + 7~12월 FC</span></div>
   </div>
 
   <!-- Q1~Q4 분기별 인사이트 카드 -->
@@ -952,16 +924,15 @@ body.printing .cb-combo{height:195px!important}
     <div class="card">
       <div class="card-hdr-row" style="display:flex;align-items:flex-start;justify-content:space-between;gap:1.2rem;margin-bottom:.9rem">
         <div>
-          <div class="card-ttl">공정별 생산량 vs Max Capa &amp; 가동률 — 통합 뷰</div>
-          <div class="card-sub" id="procComboSub" style="margin-bottom:0">공정별 생산량 · 전체 12개월 &nbsp;·&nbsp; <span style="color:rgba(251,113,133,.9);font-weight:600">─ ─ Max Capa</span> &nbsp;·&nbsp; <span style="color:var(--gold2);font-weight:600">— 가동률(%)</span></div>
+          <div class="card-ttl">Press 생산량 vs Max Capa &amp; 가동률 — 범용·일관 통합 뷰</div>
+          <div class="card-sub" id="procComboSub" style="margin-bottom:0">Press 전체(범용+일관) · 전체 12개월 &nbsp;·&nbsp; <span style="color:rgba(251,113,133,.9);font-weight:600">─ ─ 총 Max Capa</span> &nbsp;·&nbsp; <span style="color:var(--gold2);font-weight:600">— 가동률(%)</span></div>
         </div>
         <div class="dash-filters" style="flex-shrink:0;padding-top:.1rem">
           <div class="dash-select-wrap">
             <select id="procSelect" class="dash-select">
-              <option value="press" selected>Press</option>
-              <option value="vp">일관 포장</option>
-              <option value="assy">외주 포장</option>
-              <option value="laser">Laser</option>
+              <option value="all" selected>전체</option>
+              <option value="beomyong">범용</option>
+              <option value="ilgwan">일관</option>
             </select>
           </div>
           <span class="dash-range-label">월</span>
@@ -1068,21 +1039,11 @@ body.printing .cb-combo{height:195px!important}
     </div>
   </div>
 
-  <div class="g3w reveal">
+  <div class="mb reveal">
     <div class="card">
       <div class="card-ttl">공정별 월별 실적 &amp; Forecast 추이</div>
       <div class="card-sub">Press / 외주 포장 / 일관 포장 / Laser · 실선 = 확정 · 점선 = Forecast</div>
-      <div class="cb-lg"><canvas id="cProc26"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-ttl">공정 비중</div>
-      <div class="card-sub">연간 전망 기준</div>
-      <div class="cb-lg"><canvas id="cProc26Donut"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-ttl">시리즈 비중</div>
-      <div class="card-sub">연간 전망 기준</div>
-      <div class="cb-lg"><canvas id="cSer26Donut"></canvas></div>
+      <div class="cb-xl"><canvas id="cProc26"></canvas></div>
     </div>
   </div>
 
@@ -1255,37 +1216,32 @@ const dS={s:[54.4,39.5,44.7,31.6,34.2,58.1,44.6,43.8,42.0,42.7,42.0,40.2],a:[39.
 const dS24={s:[22.0,9.3,12.1,9.3,11.2,8.2,14.1,21.7,17.0,18.0,20.0,44.4],a:[31.4,34.1,40.2,7.9,10.6,21.5,29.5,23.1,21.4,29.9,32.6,18.9],f:[3.5,3.0,4.0,8.5,20.7,33.2,23.8,4.7,3.3,4.5,3.3,3.4],etc:[25.8,14.7,21.3,18.4,23.3,20.4,22.7,24.2,18.3,22.8,17.9,17.1]};
 const dS25={s:[43.4,36.1,34.0,26.7,27.4,29.0,38.9,39.0,39.2,38.9,41.7,53.5],a:[25.3,48.3,60.1,41.6,39.4,48.8,44.8,48.2,54.2,61.9,39.9,44.4],f:[2.5,3.4,4.9,10.8,34.2,44.5,37.9,14.3,9.1,10.2,7.3,6.4],etc:[16.6,14.4,18.8,14.5,12.4,13.6,17.7,14.2,18.6,16.6,18.6,19.0]};
 const dCapa={max:[152.0,115.0,155.0,130.0,155.0,158.0,162.0,162.0,162.0,158.0,152.0,150.0]};
-const dPressCapaFc=[124.8,81.6,124.8,110.4,115.2,124.8,129.6,115.2,115.2,129.6,120.0,110.4];
-const dLaserCapaFc=[20.6,13.5,20.6,18.3,19.1,20.6,21.4,19.1,19.1,21.4,19.8,18.3];
 
 const S=a=>a.reduce((x,y)=>x+y,0);
 const moSerTot=MO.map((_,i)=>+(dS.s[i]+dS.a[i]+dS.f[i]+dS.etc[i]).toFixed(1));
 const utilRate=dCapa.max.map((c,i)=>+((moSerTot[i]/c)*100).toFixed(1));
 
-/* ── 공정별 Capa 분리 (2026년 1~6월 ERP 확정 실적 평균 비중 기준) ── */
-(()=>{
-  const ACT=6; // 1~6월
-  const avg=k=>d26[k].slice(0,ACT).reduce((a,b)=>a+b,0)/ACT;
-  const avgP={press:avg('press'),vp:avg('vp'),laser:avg('laser'),assy:avg('assy')};
-  const tot=Object.values(avgP).reduce((a,b)=>a+b,0);
-  const sh={press:avgP.press/tot,vp:avgP.vp/tot,laser:avgP.laser/tot,assy:avgP.assy/tot};
-  // 비중 정보 콘솔 출력 (디버그용)
-  // console.log('공정별 Capa 비중:',Object.entries(sh).map(([k,v])=>`${k}:${(v*100).toFixed(1)}%`).join(' '));
-
-  window.dCapaProc={
-    press:dPressCapaFc,
-    vp:   dCapa.max.map(c=>+(c*sh.vp).toFixed(1)),
-    laser:dLaserCapaFc,
-    assy: dCapa.max.map(c=>+(c*sh.assy).toFixed(1))
-  };
-  window.utilRateProc={
-    press:MO.map((_,i)=>+((d26.press[i]/dCapaProc.press[i])*100).toFixed(1)),
-    vp:   MO.map((_,i)=>+((d26.vp[i]   /dCapaProc.vp[i]   )*100).toFixed(1)),
-    laser:MO.map((_,i)=>+((d26.laser[i] /dCapaProc.laser[i])*100).toFixed(1)),
-    assy: MO.map((_,i)=>+((d26.assy[i]  /dCapaProc.assy[i] )*100).toFixed(1))
-  };
-  window.procCapaShare=sh;
-})();
+/* ── Press 범용/일관 세부 분리 (Prod.Dep 기준 실적 + Press Capa.xlsx 설비 스펙 기준 Capa, 2026-07-04) ── */
+const dPress={
+  beomyong:[49.2,29.7,33.4,25.8,40.5,49.5,37.2,36.4,35.7,34.9,34.3,33.2],
+  ilgwan:  [23.0,20.7,16.7,18.6,29.9,28.6,22.4,22.0,21.5,21.1,20.6,20.0]
+};
+/* 1~6월은 (Press,Press Charge)=범용 / (Press,Press auto charge)=일관 실적 그대로, 7~12월은 1~6월 실적 비중(범용 62.4% : 일관 37.6%)으로 Forecast 배분 */
+const dPressCapaSplit={
+  all:     [125.5,82.1,125.5,111.1,115.8,125.5,130.4,115.8,115.8,130.4,120.7,111.1],
+  beomyong:[92.2, 60.3, 92.2, 81.6, 85.1, 92.2, 95.8, 85.1, 85.1, 95.8, 88.7, 81.6],
+  ilgwan:  [33.3, 21.8, 33.3, 29.5, 30.7, 33.3, 34.6, 30.7, 30.7, 34.6, 32.0, 29.5]
+};
+/* Press Capa.xlsx 설비별(Ton급) 보유수·SPM·가동율·수율 기준 Daily(2 Shift) Capa × 월별 가동일(26,17,26,23,24,26,27,24,24,27,25,23) */
+const utilPressRate={
+  all:     MO.map((_,i)=>+((d26.press[i]     /dPressCapaSplit.all[i]     )*100).toFixed(1)),
+  beomyong:MO.map((_,i)=>+((dPress.beomyong[i]/dPressCapaSplit.beomyong[i])*100).toFixed(1)),
+  ilgwan:  MO.map((_,i)=>+((dPress.ilgwan[i]  /dPressCapaSplit.ilgwan[i]  )*100).toFixed(1))
+};
+const pressCapaShare={
+  beomyong:+(dPressCapaSplit.beomyong.reduce((a,b)=>a+b,0)/dPressCapaSplit.all.reduce((a,b)=>a+b,0)).toFixed(3),
+  ilgwan:  +(dPressCapaSplit.ilgwan.reduce((a,b)=>a+b,0)  /dPressCapaSplit.all.reduce((a,b)=>a+b,0)).toFixed(3)
+};
 const tot25=MO.map((_,i)=>+(d25.assy[i]+d25.press[i]+d25.vp[i]+d25.laser[i]).toFixed(2));
 const tot24=MO.map((_,i)=>+(d24.assy[i]+d24.press[i]+d24.vp[i]+d24.laser[i]).toFixed(2));
 const tot26=moSerTot;
@@ -1359,7 +1315,7 @@ function makeRatioLine(id,entries){
 }
 
 /* ══ 2026 ① 공정별 콤보 차트 (필터 연동) ══ */
-let procComboChart, filterProc='press', filterMoFrom=0, filterMoTo=11;
+let procComboChart, filterProc='all', filterMoFrom=0, filterMoTo=11;
 
 function buildProcComboData(proc, moFrom, moTo){
   const isFullRange = moFrom===0 && moTo===11;
@@ -1376,8 +1332,8 @@ function buildProcComboData(proc, moFrom, moTo){
   const segInRange = ctx => inRange(ctx.p0DataIndex)||inRange(ctx.p1DataIndex);
   const segDim = (ctx,bright,dim) => isFullRange||segInRange(ctx) ? bright : dim;
 
-  const capData = isAllProc ? dCapa.max : (dCapaProc[proc] ?? dCapa.max);
-  const utilData = isAllProc ? utilRate : (utilRateProc[proc] ?? utilRate);
+  const capData = dPressCapaSplit[proc] ?? dPressCapaSplit.all;
+  const utilData = utilPressRate[proc] ?? utilPressRate.all;
 
   // 바 너비: 생산량·Capa 막대가 맞닿을 정도로 넓게
   const BW = {barPercentage:.9, categoryPercentage:.65};
@@ -1430,12 +1386,10 @@ function buildProcComboData(proc, moFrom, moTo){
   };
 
   if(isAllProc){
-    // 전체: 4개 공정 스택 (stack:'prod')
+    // Press 전체: 범용 + 일관 스택 (stack:'prod')
     const pDefs=[
-      {data:d26.press,label:'Press',   r:14, g:165,b:233},
-      {data:d26.vp,   label:'일관 포장', r:16, g:185,b:129},
-      {data:d26.laser,label:'Laser',   r:139,g:92, b:246},
-      {data:d26.assy, label:'외주 포장', r:245,g:158,b:11}
+      {data:dPress.beomyong,label:'범용', r:14, g:165,b:233},
+      {data:dPress.ilgwan,  label:'일관', r:16, g:185,b:129}
     ];
     const barDs=pDefs.map(pd=>({
       type:'bar', label:pd.label, data:pd.data, stack:'prod', yAxisID:'y',
@@ -1444,15 +1398,13 @@ function buildProcComboData(proc, moFrom, moTo){
     }));
     return {labels:MO, datasets:[...barDs, capaBar, utilLine]};
   } else {
-    // 개별 공정: 선택 공정 단독 막대 (바닥부터 시작, stack:'prod')
+    // 범용 / 일관 단독 막대 (바닥부터 시작, stack:'prod')
     const pMap={
-      press:{label:'Press',   r:14, g:165,b:233},
-      vp:   {label:'일관 포장', r:16, g:185,b:129},
-      laser:{label:'Laser',   r:139,g:92, b:246},
-      assy: {label:'외주 포장', r:245,g:158,b:11}
+      beomyong:{label:'범용', r:14, g:165,b:233},
+      ilgwan:  {label:'일관', r:16, g:185,b:129}
     };
-    const pm=pMap[proc]??pMap.press;
-    const pd={press:d26.press,vp:d26.vp,laser:d26.laser,assy:d26.assy}[proc]??d26.press;
+    const pm=pMap[proc]??pMap.beomyong;
+    const pd=dPress[proc]??dPress.beomyong;
     const procBar={
       type:'bar', label:pm.label, data:pd, stack:'prod', yAxisID:'y',
       backgroundColor:MO.map((_,i)=>`rgba(${pm.r},${pm.g},${pm.b},${mA(i,.85,.42)})`),
@@ -1466,10 +1418,8 @@ function updateCapaWarnings(){
   // 공정별 경고
   const procCapaThresh=0.95;
   const procWarn=[];
-  const procMap={press:{name:'Press Charge',cap:dCapaProc.press,data:d26.press},
-                 vp:{name:'일관 포장',cap:dCapaProc.vp,data:d26.vp},
-                 laser:{name:'Laser',cap:dCapaProc.laser,data:d26.laser},
-                 assy:{name:'외주 포장',cap:dCapaProc.assy,data:d26.assy}};
+  const procMap={beomyong:{name:'Press(범용)',cap:dPressCapaSplit.beomyong,data:dPress.beomyong},
+                 ilgwan:  {name:'Press(일관)',cap:dPressCapaSplit.ilgwan,  data:dPress.ilgwan}};
   const selProc=filterProc==='all'?Object.keys(procMap):([filterProc]);
   selProc.forEach(pk=>{
     const pm=procMap[pk];
@@ -1522,34 +1472,33 @@ function updateProcComboChart(){
   updateCapaWarnings();
   const el=document.getElementById('procComboSub');
   if(el){
-    const pLbl={all:'공정별 생산량',press:'Press',vp:'일관 포장',laser:'Laser',assy:'외주 포장'}[filterProc];
+    const pLbl={all:'Press 전체(범용+일관)',beomyong:'Press(범용)',ilgwan:'Press(일관)'}[filterProc];
     const isFullRange=filterMoFrom===0&&filterMoTo===11;
     const mLbl=isFullRange?'전체 12개월':`${MO[filterMoFrom]} ~ ${MO[filterMoTo]}`;
     const hi=!isFullRange||filterProc!=='all';
     const capLbl = filterProc==='all'
       ? `총 Max Capa`
-      : `${pLbl} Capa <span style="color:var(--t3);font-size:.65rem">(전체의 ${((procCapaShare[filterProc]??0)*100).toFixed(1)}%)</span>`;
+      : `${pLbl} Capa <span style="color:var(--t3);font-size:.65rem">(전체의 ${((pressCapaShare[filterProc]??0)*100).toFixed(1)}%)</span>`;
     el.innerHTML=`${pLbl} · ${mLbl}${hi?' <span style="color:var(--gold2);font-size:.68rem;font-weight:700">▶ 하이라이트</span>':''} &nbsp;·&nbsp; <span style="color:rgba(251,113,133,.9);font-weight:600">─ ─ ${capLbl}</span> &nbsp;·&nbsp; <span style="color:var(--gold2);font-weight:600">— 가동률(%)</span>`;
   }
 }
 
 procComboChart=new Chart(document.getElementById('cProcCombo26'),{
   type:'bar',
-  data:buildProcComboData('press',0,11),
+  data:buildProcComboData('all',0,11),
   options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
     plugins:{legend:{labels:{color:'#475569',font:{size:11},boxWidth:14,padding:14}},
       tooltip:{...TT,callbacks:{
         label:c=>{if(c.dataset.label==='가동률(%)')return`  가동률: ${c.parsed.y}%`;if(c.dataset.label==='Max Capa')return`  Max Capa: ${c.parsed.y.toFixed(1)}M`;return`  ${c.dataset.label}: ${c.parsed.y.toFixed(1)}M`;},
         afterBody:items=>{
           const i=items[0].dataIndex;
-          const capD=filterProc==='all'?dCapa.max:(dCapaProc[filterProc]??dCapa.max);
-          const utilD=filterProc==='all'?utilRate:(utilRateProc[filterProc]??utilRate);
-          const prodMap={press:d26.press,vp:d26.vp,laser:d26.laser,assy:d26.assy};
+          const capD=dPressCapaSplit[filterProc]??dPressCapaSplit.all;
+          const utilD=utilPressRate[filterProc]??utilPressRate.all;
           const prod=filterProc==='all'
-            ?+(d26.press[i]+d26.vp[i]+d26.laser[i]+d26.assy[i]).toFixed(1)
-            :+(prodMap[filterProc]?.[i]??0).toFixed(1);
+            ?+(dPress.beomyong[i]+dPress.ilgwan[i]).toFixed(1)
+            :+(dPress[filterProc]?.[i]??0).toFixed(1);
           const v=utilD[i]; const cap=capD[i];
-          const pLabel=filterProc==='all'?'총 생산':{press:'Press',vp:'일관 포장',laser:'Laser',assy:'외주 포장'}[filterProc];
+          const pLabel={all:'Press 전체',beomyong:'Press(범용)',ilgwan:'Press(일관)'}[filterProc];
           return[`─────────`,`${pLabel}: ${prod}M / Capa: ${cap}M  ${i<6?'(Actual)':'(Forecast)'}`,`가동률: ${v}%  ${v>=85?'⚠ Capa 주의':v>=75?'✓ 양호':'↓ 여유'}`];
         }
       }}},
@@ -1793,48 +1742,6 @@ document.getElementById('procSelect').addEventListener('change',e=>{
   updateProcComboChart();
 });
 
-/* ── 섹션 헤더 드롭다운 → KPI 카드만 업데이트 (차트 미연동) ── */
-function updateSectionKPI(proc){
-  const Sm=a=>+a.reduce((x,y)=>x+y,0).toFixed(1);
-  const pNames={all:'전망 생산량 합계',press:'Press 생산량',vp:'일관 포장 생산량',assy:'외주 포장 생산량',laser:'Laser 생산량'};
-
-  let prod, capa, utilArr;
-  if(proc==='all'){
-    prod=Sm(moSerTot); capa=Sm(dCapa.max); utilArr=utilRate;
-  }else{
-    const pData={press:d26.press,vp:d26.vp,laser:d26.laser,assy:d26.assy};
-    prod=Sm(pData[proc]); capa=Sm(dCapaProc[proc]); utilArr=utilRateProc[proc];
-  }
-
-  const avgUtil=+(utilArr.reduce((a,b)=>a+b,0)/12).toFixed(1);
-  const peakUtil=+Math.max(...utilArr).toFixed(1);
-  const peakIdx=utilArr.indexOf(Math.max(...utilArr));
-  const peakMo=MO[peakIdx];
-  const remain=+(capa-prod).toFixed(1);
-  const freeRate=+((1-prod/capa)*100).toFixed(1);
-
-  // KPI 카드 값 업데이트
-  document.getElementById('kpi-prod-tag').textContent=pNames[proc]??pNames.all;
-  document.getElementById('kpi-prod-val').textContent=prod.toFixed(1);
-  document.getElementById('kpi-prod-badge').textContent=proc==='all'?(()=>{const y=(prod/Sm(tot25)-1)*100;return (y>=0?'▲ +':'▼ ')+y.toFixed(1)+'% YoY';})():`전체의 ${((prod/Sm(moSerTot))*100).toFixed(1)}%`;
-
-  document.getElementById('kpi-capa-tag').textContent=proc==='all'?'최대 생산 CAPA':`${pNames[proc]??'공정'} CAPA`;
-  document.getElementById('kpi-capa-val').textContent=capa.toFixed(1);
-  document.getElementById('kpi-capa-badge').textContent=`잔여 Capa: ${remain}M`;
-
-  document.getElementById('kpi-util-val').textContent=avgUtil.toFixed(1);
-  document.getElementById('kpi-util-badge').textContent=`여유 가동 비율: ${freeRate.toFixed(1)}%`;
-
-  document.getElementById('kpi-peak-tag').textContent=`PEAK 월 가동률 (${peakMo})`;
-  document.getElementById('kpi-peak-val').textContent=peakUtil.toFixed(1);
-  document.getElementById('kpi-peak-badge').textContent=`⚠ Peak 가동월: ${peakMo} (${peakUtil}%)`;
-}
-
-document.getElementById('sectionProcFilter').addEventListener('change',e=>{
-  updateSectionKPI(e.target.value);
-});
-// 초기 KPI: press 기준으로 표시
-updateSectionKPI('all');
 document.getElementById('moFromSelect').addEventListener('change',e=>{
   filterMoFrom=parseInt(e.target.value);
   if(filterMoFrom>filterMoTo){
@@ -1861,9 +1768,6 @@ document.getElementById('moToSelect').addEventListener('change',e=>{
     {label:'외주 포장',data:d26.assy,borderColor:'#F59E0B',borderWidth:2.5,tension:.4,fill:true,backgroundColor:c=>aGrad(c,245,158,11),pointRadius:MO.map((_,i)=>i<6?4:3),pointBackgroundColor:'#F59E0B',segment:{borderDash:ctx=>ctx.p0DataIndex>=6?[6,3]:undefined}}
   ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:LC,tooltip:{...TT,callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y.toFixed(2)}M`,afterBody:items=>`  ${items[0].dataIndex<6?'◆ ERP 확정 실적':'◇ 경영계획 Forecast'}`}}},scales:{x:{grid:GR,border:{display:false},ticks:TC},y:{grid:GR,border:{display:false},ticks:{...TC,callback:v=>v+'M'}}}}});
 })();
-
-/* ══ 2026 ③ 공정 도넛 ══ */
-makeDonut('cProc26Donut',d26);
 
 /* ══ 2026 proc 스파크라인 ══ */
 (()=>{
@@ -1897,12 +1801,6 @@ makeDonut('cProc26Donut',d26);
   mkSpark('spark-laser',d26.laser,139,92,246);
 })();
 
-/* ══ 2026 ④ 시리즈 도넛 ══ */
-(()=>{
-  const vals=[S(dS.s),S(dS.a),S(dS.f),S(dS.etc)],tot=S(vals);
-  new Chart(document.getElementById('cSer26Donut'),{type:'doughnut',data:{labels:['S 시리즈','A 시리즈','폴더블(F)','기타'],datasets:[{data:vals,backgroundColor:['rgba(14,165,233,.85)','rgba(245,158,11,.85)','rgba(139,92,246,.85)','rgba(100,116,139,.72)'],borderColor:['#0EA5E9','#F59E0B','#8B5CF6','#64748B'],borderWidth:1.5,borderRadius:4,hoverBorderWidth:2.5}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{...LC,position:'bottom'},tooltip:{...TT,callbacks:{label:c=>`${c.label}: ${c.parsed.toFixed(1)}M (${(c.parsed/tot*100).toFixed(1)}%)`}}}}});
-})();
-
 /* ══ 2026 ⑤ 시리즈 라인 ══ */
 (()=>{
   new Chart(document.getElementById('cSer26Line'),{type:'line',data:{labels:MO,datasets:[
@@ -1918,14 +1816,10 @@ makeDonut('cProc26Donut',d26);
   const ac=i=>i<6?'style="color:var(--em2)"':'';
   const grp=(text,color)=>`<tr class="tbl-grp"><td colspan="14" style="color:${color}!important">${text}</td></tr>`;
   const d26tot=MO.map((_,i)=>+(d26.press[i]+d26.assy[i]+d26.vp[i]+d26.laser[i]).toFixed(1));
-  const uColor=v=>v>=85?'var(--red2)':v>=75?'var(--gold2)':'var(--em2)';
   let html='';
   html+=grp('━ 공정별 (경영계획 기준)','#1878a8');
   [{n:'Press Charge',cls:'tp',lbl:'PRESS',d:d26.press},{n:'일관 포장',cls:'tv',lbl:'일관',d:d26.vp},{n:'Laser 4H',cls:'tl',lbl:'LASER',d:d26.laser},{n:'TOMT',cls:'ta',lbl:'외주',d:d26.assy.map(v=>+(v*.35).toFixed(2))},{n:'혜윰',cls:'ta',lbl:'외주',d:d26.assy.map(v=>+(v*.65).toFixed(2))}].forEach(r=>{const sm=r.d.reduce((a,b)=>a+b,0);html+=`<tr><td>${r.n}<span class="tag ${r.cls}">${r.lbl}</span></td>${r.d.map((v,i)=>`<td ${ac(i)}>${v.toFixed(2)}</td>`).join('')}<td style="color:var(--t1);font-weight:700">${sm.toFixed(2)}</td></tr>`;});
   html+=`<tr style="background:rgba(15,23,42,.04)"><td style="font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:700;color:var(--t2)">공정 소계</td>${d26tot.map((v,i)=>`<td ${ac(i)} style="${i<6?'color:var(--em2)':''}font-weight:600">${v}</td>`).join('')}<td style="color:var(--em2);font-weight:700">${d26tot.reduce((a,b)=>a+b,0).toFixed(1)}</td></tr>`;
-  html+=grp('━ Capa 검토','#c05060');
-  html+=`<tr><td style="color:var(--t2)">Max Capa<span class="tag" style="background:rgba(200,80,80,.12);color:#c05060">CAPA</span></td>${dCapa.max.map(v=>`<td style="color:var(--t3)">${v.toFixed(1)}</td>`).join('')}<td style="color:var(--t3);font-weight:700">${S(dCapa.max).toFixed(1)}</td></tr>`;
-  html+=`<tr><td>가동률<span class="tag" style="background:rgba(160,90,0,.14);color:#8a5000">UTIL</span></td>${utilRate.map(v=>`<td style="color:${uColor(v)};font-weight:${v>=85?700:400}">${v.toFixed(1)}%</td>`).join('')}<td style="color:var(--gold2);font-weight:700">${(utilRate.reduce((a,b)=>a+b,0)/12).toFixed(1)}%</td></tr>`;
   html+=grp('━ 시리즈별 (ERP 확정 실적 기반)','#6030b0');
   [{n:'S 시리즈',cls:'ts',lbl:'SM-S',d:dS.s},{n:'A 시리즈',cls:'ta',lbl:'SM-A',d:dS.a},{n:'폴더블(F)',cls:'tf',lbl:'SM-F',d:dS.f},{n:'기타',cls:'te',lbl:'ETC',d:dS.etc}].forEach(r=>{const sm=r.d.reduce((a,b)=>a+b,0);html+=`<tr><td>${r.n}<span class="tag ${r.cls}">${r.lbl}</span></td>${r.d.map((v,i)=>`<td ${ac(i)}>${v.toFixed(1)}</td>`).join('')}<td style="color:var(--t1);font-weight:700">${sm.toFixed(1)}</td></tr>`;});
   html+=`<tr style="background:rgba(15,23,42,.04)"><td style="font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:700;color:var(--t2)">시리즈 합계</td>${moSerTot.map((v,i)=>`<td ${ac(i)} style="${i<6?'color:var(--em2)':''}font-weight:600">${v}</td>`).join('')}<td style="color:var(--em2);font-weight:700">${S(moSerTot).toFixed(1)}</td></tr>`;
